@@ -2,6 +2,7 @@ import AuthClient
 import Dependencies
 import Fluent
 import FluentSQLiteDriver
+import Foundation
 import LoggingDependency
 import SharedDatabase
 import SharedModels
@@ -42,10 +43,17 @@ struct MiddlewareTests {
           #expect(res.status == .ok)
           let user = try res.content.decode(User.self)
           #expect(user.email == newUser.email)
+        })
 
-          // try await app.testing().test(.GET, "home") { res in
-          //   #expect(res.status == .ok)
-          // }
+      try await app.testing().test(
+        .GET, "home",
+        beforeRequest: { req in
+          req.headers.basicAuthorization = .init(
+            username: "testy@example.com", password: "super-secret"
+          )
+        },
+        afterResponse: { res in
+          #expect(res.status == .ok)
         })
 
     }
