@@ -15,7 +15,9 @@ import VaporTesting
 
 @testable import SharedMiddleware
 
-enum TestRoute: Sendable, TestRouter {
+enum TestRoute: Sendable, Routeable {
+
+  typealias Route = TestRoute
 
   case createUser(User.Create)
   case loggedIn

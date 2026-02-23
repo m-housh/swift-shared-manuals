@@ -11,6 +11,7 @@ let package = Package(
     .library(name: "SharedDatabase", targets: ["SharedDatabase"]),
     .library(name: "SharedModels", targets: ["SharedModels"]),
     .library(name: "SharedTestSupport", targets: ["SharedTestSupport"]),
+    .library(name: "SharedViews", targets: ["SharedViews"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-log.git", from: "1.6.0"),
@@ -20,6 +21,7 @@ let package = Package(
     .package(url: "https://github.com/pointfreeco/swift-url-routing.git", from: "0.6.2"),
     .package(url: "https://github.com/pointfreeco/vapor-routing.git", from: "0.1.3"),
     .package(url: "https://github.com/elementary-swift/elementary.git", from: "0.6.0"),
+    .package(url: "https://github.com/elementary-swift/elementary-htmx.git", from: "0.5.0"),
     .package(url: "https://github.com/vapor/vapor.git", from: "4.110.1"),
     .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
     .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.6.0"),
@@ -70,7 +72,8 @@ let package = Package(
     .target(
       name: "SharedModels",
       dependencies: [
-        .product(name: "Dependencies", package: "swift-dependencies")
+        .product(name: "Dependencies", package: "swift-dependencies"),
+        .product(name: "URLRouting", package: "swift-url-routing"),
       ],
     ),
     .target(
@@ -99,6 +102,24 @@ let package = Package(
         .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
         .product(name: "VaporTesting", package: "vapor"),
       ]
+    ),
+    .target(
+      name: "SharedViews",
+      dependencies: [
+        .target(name: "SharedModels"),
+        .product(name: "Elementary", package: "elementary"),
+        .product(name: "ElementaryHTMX", package: "elementary-htmx"),
+      ]
+    ),
+    .testTarget(
+      name: "SharedViewTests",
+      dependencies: [
+        .target(name: "SharedViews"),
+        .target(name: "HTMLSnapshotTesting"),
+      ],
+      resources: [
+        .copy("__Snapshots__")
+      ],
     ),
   ]
 )

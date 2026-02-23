@@ -1,16 +1,10 @@
 import Fluent
 import FluentSQLiteDriver
 import SharedMiddleware
+import SharedModels
 import URLRouting
 import Vapor
 import VaporTesting
-
-public protocol TestRouter<Route> {
-  associatedtype Route
-  associatedtype Router: ParserPrinter<URLRequestData, Route>
-
-  static var router: Router { get }
-}
 
 extension TestingApplicationTester {
   @discardableResult
@@ -25,7 +19,7 @@ extension TestingApplicationTester {
     column: Int = #column,
     beforeRequest: (inout TestingHTTPRequest) async throws -> Void = { _ in },
     afterResponse: (TestingHTTPResponse) async throws -> Void = { _ in }
-  ) async throws -> TestingApplicationTester where R: TestRouter, R.Route == R {
+  ) async throws -> TestingApplicationTester where R: Routeable {
     try await test(
       method,
       R.router.path(for: route),
@@ -51,7 +45,7 @@ extension TestingApplicationTester {
     line: Int = #line,
     column: Int = #column,
     afterResponse: (TestingHTTPResponse) async throws -> Void = { _ in }
-  ) async throws -> TestingApplicationTester where R: TestRouter, R.Route == R {
+  ) async throws -> TestingApplicationTester where R: Routeable {
     try await test(
       method,
       R.router.path(for: route),
