@@ -14,10 +14,12 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-log.git", from: "1.6.0"),
+    .package(url: "https://github.com/m-housh/swift-validations.git", from: "0.3.5"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.0.0"),
+    .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.12.0"),
     .package(url: "https://github.com/pointfreeco/swift-url-routing.git", from: "0.6.2"),
     .package(url: "https://github.com/pointfreeco/vapor-routing.git", from: "0.1.3"),
-    .package(url: "https://github.com/m-housh/swift-validations.git", from: "0.3.5"),
+    .package(url: "https://github.com/elementary-swift/elementary.git", from: "0.6.0"),
     .package(url: "https://github.com/vapor/vapor.git", from: "4.110.1"),
     .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
     .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.6.0"),
@@ -49,6 +51,13 @@ let package = Package(
         .target(name: "SharedTestSupport"),
         .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
         .product(name: "VaporTesting", package: "vapor"),
+      ]
+    ),
+    .target(
+      name: "HTMLSnapshotTesting",
+      dependencies: [
+        .product(name: "Elementary", package: "elementary"),
+        .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
       ]
     ),
     .target(
