@@ -2,6 +2,7 @@ import Dependencies
 import Fluent
 import FluentSQLiteDriver
 import SharedModels
+import SharedTestSupport
 import Testing
 import Vapor
 
@@ -13,7 +14,7 @@ struct ProjectTests {
   @Test
   func projectHappyPaths() async throws {
     try await withTestUser { user in
-      @Dependency(\.database.projects) var projects
+      @Dependency(\.sharedDatabase.projects) var projects
 
       let project = try await projects.create(
         user.id,
@@ -60,8 +61,8 @@ struct ProjectTests {
 
   @Test
   func notFound() async throws {
-    try await withDatabase {
-      @Dependency(\.database.projects) var projects
+    try await withTestDatabase {
+      @Dependency(\.sharedDatabase.projects) var projects
 
       await #expect(throws: NotFoundError.self) {
         try await projects.delete(UUID(0))

@@ -10,6 +10,7 @@ let package = Package(
     .library(name: "LoggingDependency", targets: ["LoggingDependency"]),
     .library(name: "SharedDatabase", targets: ["SharedDatabase"]),
     .library(name: "SharedModels", targets: ["SharedModels"]),
+    .library(name: "SharedTestSupport", targets: ["SharedTestSupport"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-log.git", from: "1.6.0"),
@@ -45,6 +46,7 @@ let package = Package(
         .target(name: "AuthClient"),
         .target(name: "SharedMiddleware"),
         .target(name: "SharedDatabase"),
+        .target(name: "SharedTestSupport"),
         .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
         .product(name: "VaporTesting", package: "vapor"),
       ]
@@ -75,7 +77,18 @@ let package = Package(
       name: "SharedDatabaseTests",
       dependencies: [
         .target(name: "SharedDatabase"),
+        .target(name: "SharedTestSupport"),
         .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+      ]
+    ),
+    .target(
+      name: "SharedTestSupport",
+      dependencies: [
+        .target(name: "AuthClient"),
+        .target(name: "SharedMiddleware"),
+        .target(name: "SharedDatabase"),
+        .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+        .product(name: "VaporTesting", package: "vapor"),
       ]
     ),
   ]

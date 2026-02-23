@@ -2,6 +2,7 @@ import Dependencies
 import Fluent
 import FluentSQLiteDriver
 import SharedModels
+import SharedTestSupport
 import Testing
 import Vapor
 
@@ -12,8 +13,8 @@ struct UserTests {
 
   @Test
   func testUsers() async throws {
-    try await withDatabase {
-      @Dependency(\.database) var database
+    try await withTestDatabase {
+      @Dependency(\.sharedDatabase) var database
 
       let user = try await database.users.create(
         .init(email: "test@test.com", password: "super-secret", confirmPassword: "super-secret")
@@ -46,8 +47,8 @@ struct UserTests {
 
   @Test
   func deleteFailsWithInvalidUserID() async throws {
-    try await withDatabase {
-      @Dependency(\.database.users) var users
+    try await withTestDatabase {
+      @Dependency(\.sharedDatabase.users) var users
       await #expect(throws: NotFoundError.self) {
         try await users.delete(UUID(0))
       }
@@ -56,16 +57,16 @@ struct UserTests {
 
   @Test
   func logoutIgnoresUnfoundTokenID() async throws {
-    try await withDatabase {
-      @Dependency(\.database.users) var users
+    try await withTestDatabase {
+      @Dependency(\.sharedDatabase.users) var users
       try await users.logout(UUID(0))
     }
   }
 
   @Test
   func loginFails() async throws {
-    try await withDatabase {
-      @Dependency(\.database.users) var users
+    try await withTestDatabase {
+      @Dependency(\.sharedDatabase.users) var users
 
       await #expect(throws: NotFoundError.self) {
         try await users.login(
@@ -90,7 +91,7 @@ struct UserTests {
   @Test
   func userProfileHappyPath() async throws {
     try await withTestUser { user in
-      @Dependency(\.database.userProfiles) var profiles
+      @Dependency(\.sharedDatabase.userProfiles) var profiles
       let profile = try await profiles.create(
         .init(
           userID: user.id,
@@ -120,8 +121,8 @@ struct UserTests {
 
   @Test
   func testUserProfileFails() async throws {
-    try await withDatabase {
-      @Dependency(\.database.userProfiles) var profiles
+    try await withTestDatabase {
+      @Dependency(\.sharedDatabase.userProfiles) var profiles
       await #expect(throws: NotFoundError.self) {
         try await profiles.delete(UUID(0))
       }
