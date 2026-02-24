@@ -16,7 +16,7 @@ private enum DateFormatterKey: DependencyKey {
   static var liveValue: any DateFormatter { LiveDateFormatter() }
 }
 
-private struct LiveDateFormatter: DateFormatter {
+struct LiveDateFormatter: DateFormatter {
   private let formatter: Foundation.DateFormatter
 
   init() {

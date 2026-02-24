@@ -1,25 +1,30 @@
 import Dependencies
+import DependenciesTestSupport
 import Elementary
 import ElementaryHTMX
 import Foundation
 import HTMLSnapshotTesting
-import SharedModels
 import SharedViews
 import SnapshotTesting
 import Testing
 @preconcurrency import URLRouting
 
+@testable import SharedModels
+
 @Suite(
-  .snapshots(record: .missing)
+  .snapshots(record: .missing),
+  .dependencies {
+    $0.date.now = Date(timeIntervalSince1970: 1_234_567_890)
+    $0.dateFormatter = LiveDateFormatter()
+    $0.numberFormatter = LiveNumberFormatter()
+  }
 )
 struct SharedViewTests {
 
   @Test
   func dateView() {
-    let date = Date(timeIntervalSince1970: 1_234_567_890)
-    let view = DateView(date)
-
-    assertSnapshot(of: view, as: .html)
+    @Dependency(\.date.now) var now
+    assertSnapshot(of: DateView(now), as: .html)
   }
 
   @Test
@@ -31,12 +36,13 @@ struct SharedViewTests {
     assertSnapshot(of: int, as: .html)
   }
 
-  @Test
-  func inputValue() {
-    assertSnapshot(of: input(.value(12.1)), as: .html)
-    assertSnapshot(of: input(.value(69)), as: .html)
-    assertSnapshot(of: input(.value(UUID(0))), as: .html)
-    assertSnapshot(of: input(.value(String?.none)), as: .html)
+  @Test(arguments: TestValueInput.allCases)
+  func inputValue(value: TestValueInput) {
+    assertSnapshot(
+      of: TestValueInputView(value: value),
+      as: .html,
+      named: value.name
+    )
   }
 
   @Test
@@ -64,20 +70,21 @@ struct SharedViewTests {
     assertSnapshot(of: input(.minlength(8)), as: .html)
   }
 
-  /// NOTE: Doesn't work if using the patterns as test arguments.
-  @Test
-  func inputPattern() {
-    assertSnapshot(of: input(.pattern(.username)), as: .html)
-    assertSnapshot(of: input(.pattern(.password)), as: .html)
+  @Test(arguments: PatternType.allCases)
+  func inputPattern(pattern: PatternType) {
+    assertSnapshot(
+      of: input(.pattern(pattern)),
+      as: .html,
+      named: pattern.rawValue
+    )
   }
 
-  @Test
-  func tooltip() {
-    for position in AnchorPosition.allCases {
-      let sut = button { "Test" }
-        .tooltip("I'm a tooltip", position: position)
-      assertSnapshot(of: sut, as: .html)
-    }
+  @Test(arguments: AnchorPosition.allCases)
+  func tooltip(position: AnchorPosition) {
+    let sut = button { "Test" }
+      .tooltip("I'm a tooltip", position: position)
+
+    assertSnapshot(of: sut, as: .html, named: "tooltip_\(position.rawValue)")
   }
 
   @Test
@@ -222,5 +229,45 @@ struct TestError: Error {
 
   var localizedDescription: String {
     "This is only a test!"
+  }
+}
+
+enum TestValueInput: CaseIterable {
+  case double(Double)
+  case int(Int)
+  case uuid(UUID)
+  case none
+
+  static let allCases: [Self] = [
+    .double(420.69),
+    .int(42),
+    .uuid(UUID(0)),
+    .none,
+  ]
+
+  var name: String {
+    switch self {
+    case .double: return "double"
+    case .int: return "int"
+    case .uuid: return "uuid"
+    case .none: return "nil"
+    }
+  }
+}
+
+struct TestValueInputView: HTML {
+  let value: TestValueInput
+
+  var body: some HTML {
+    switch value {
+    case .double(let double):
+      input(.value(double))
+    case .int(let int):
+      input(.value(int))
+    case .uuid(let uuid):
+      input(.value(uuid))
+    case .none:
+      input(.value(String?.none))
+    }
   }
 }

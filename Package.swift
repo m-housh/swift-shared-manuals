@@ -116,6 +116,7 @@ let package = Package(
       dependencies: [
         .target(name: "SharedViews"),
         .target(name: "HTMLSnapshotTesting"),
+        .product(name: "DependenciesTestSupport", package: "swift-dependencies"),
       ],
       resources: [
         .copy("__Snapshots__")

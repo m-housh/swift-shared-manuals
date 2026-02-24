@@ -83,7 +83,7 @@ extension HTMLAttribute where Tag == HTMLTag.input {
 }
 
 /// Represents regex patterns used for validating input fields.
-public enum PatternType: Sendable, CaseIterable {
+public enum PatternType: String, Sendable, CaseIterable {
   /// Password pattern that requires more than 8 characters,
   /// a lower case letter, upper case letter, and a number.
   case password

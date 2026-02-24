@@ -30,7 +30,7 @@ private struct NumberFormatterKey: DependencyKey {
   static var liveValue: any NumberFormatter { LiveNumberFormatter() }
 }
 
-private struct LiveNumberFormatter: NumberFormatter {
+struct LiveNumberFormatter: NumberFormatter {
   private let formatter: Foundation.NumberFormatter
 
   init() {
