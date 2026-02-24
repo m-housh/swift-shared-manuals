@@ -13,6 +13,7 @@ extension DependencyValues {
 }
 
 private struct NumberFormatterKey: DependencyKey {
+  static var testValue: any NumberFormatter { LiveNumberFormatter() }
   static var liveValue: any NumberFormatter { LiveNumberFormatter() }
 }
 

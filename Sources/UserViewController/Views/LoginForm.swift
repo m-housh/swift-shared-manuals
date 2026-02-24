@@ -109,7 +109,7 @@ struct LoginForm: HTML, Sendable {
             .class("btn btn-link"),
             .hx.get(route: signupRoute),
             .hx.target("#loginForm"),
-            .hx.swap(.outerHTML),
+            .hx.swap(.outerHTML.swap("1s")),
             .hx.pushURL(true)
           ) {
             style == .login ? "Sign Up" : "Login"

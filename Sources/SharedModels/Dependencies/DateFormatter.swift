@@ -13,6 +13,7 @@ extension DependencyValues {
 }
 
 private enum DateFormatterKey: DependencyKey {
+  static var testValue: any DateFormatter { LiveDateFormatter() }
   static var liveValue: any DateFormatter { LiveDateFormatter() }
 }
 

@@ -60,13 +60,6 @@ let package = Package(
       ]
     ),
     .target(
-      name: "HTMLSnapshotTesting",
-      dependencies: [
-        .product(name: "Elementary", package: "elementary"),
-        .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-      ]
-    ),
-    .target(
       name: "LoggingDependency",
       dependencies: [
         .product(name: "Dependencies", package: "swift-dependencies"),
@@ -104,6 +97,7 @@ let package = Package(
         .target(name: "SharedMiddleware"),
         .target(name: "SharedDatabase"),
         .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
+        .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
         .product(name: "VaporTesting", package: "vapor"),
       ]
     ),
@@ -119,7 +113,7 @@ let package = Package(
       name: "SharedViewTests",
       dependencies: [
         .target(name: "SharedViews"),
-        .target(name: "HTMLSnapshotTesting"),
+        .target(name: "SharedTestSupport"),
         .product(name: "DependenciesTestSupport", package: "swift-dependencies"),
       ],
       resources: [

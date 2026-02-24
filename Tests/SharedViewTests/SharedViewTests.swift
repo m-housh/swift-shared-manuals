@@ -3,7 +3,7 @@ import DependenciesTestSupport
 import Elementary
 import ElementaryHTMX
 import Foundation
-import HTMLSnapshotTesting
+import SharedTestSupport
 import SharedViews
 import SnapshotTesting
 import Testing
@@ -15,8 +15,6 @@ import Testing
   .snapshots(record: .missing),
   .dependencies {
     $0.date.now = Date(timeIntervalSince1970: 1_234_567_890)
-    $0.dateFormatter = LiveDateFormatter()
-    $0.numberFormatter = LiveNumberFormatter()
   }
 )
 struct SharedViewTests {

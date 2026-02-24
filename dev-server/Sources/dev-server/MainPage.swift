@@ -48,6 +48,17 @@ public struct MainPageView<Inner: HTML>: SendableHTMLDocument where Inner: Senda
       .crossorigin(.anonymous),
       .integrity("sha384-NwB2Xh66PNEYfVki0ao13UAFmdNtMIdBKZ8sNGRT6hKfCPaINuZ4ScxS6vVAycPT")
     ) {}
+    style {
+      """
+      .htmx-added {
+        opacity: 0;
+      }
+      .htmx-swapping {
+        opacity: 1;
+        transition: opacity 1s ease-out;
+      }
+      """
+    }
   }
 
   public var body: some HTML {
