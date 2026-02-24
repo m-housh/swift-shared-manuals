@@ -122,5 +122,11 @@ let package = Package(
         .copy("__Snapshots__")
       ],
     ),
+    .testTarget(
+      name: "SharedRouteTests",
+      dependencies: [
+        .target(name: "SharedModels")
+      ]
+    ),
   ]
 )
