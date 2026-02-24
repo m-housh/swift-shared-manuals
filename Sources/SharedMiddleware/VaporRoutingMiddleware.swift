@@ -1,3 +1,5 @@
+import Dependencies
+import SharedModels
 import URLRouting
 import Vapor
 import VaporRouting
@@ -33,6 +35,30 @@ extension Application {
   ) where R.Input == URLRequestData, R: Sendable, R.Output: Sendable {
     self.middleware.use(
       AsyncRoutingMiddleware(router: router, middleware: middleware, respond: closure)
+    )
+  }
+
+  public func mount<R: Parser, V: ViewController>(
+    _ router: R,
+    controller: V,
+    middleware: @escaping @Sendable (V.Route) -> [any Middleware]? = { _ in nil }
+  )
+  where
+    R.Output == V.Route,
+    R: Sendable,
+    R.Output: Sendable,
+    R.Input == URLRequestData,
+    V: Sendable
+  {
+    mount(
+      router,
+      middleware: middleware,
+      use: { request, route in
+        @Dependency(\.viewResponder) var viewResponder
+        return try await viewResponder.respond(
+          controller.viewResponse(request, route)
+        )
+      }
     )
   }
 }

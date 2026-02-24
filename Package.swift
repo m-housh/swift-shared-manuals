@@ -6,9 +6,9 @@ let package = Package(
   name: "swift-shared-manuals",
   products: [
     .library(name: "AuthClient", targets: ["AuthClient"]),
-    .library(name: "SharedMiddleware", targets: ["SharedMiddleware"]),
     .library(name: "LoggingDependency", targets: ["LoggingDependency"]),
     .library(name: "SharedDatabase", targets: ["SharedDatabase"]),
+    .library(name: "SharedMiddleware", targets: ["SharedMiddleware"]),
     .library(name: "SharedModels", targets: ["SharedModels"]),
     .library(name: "SharedTestSupport", targets: ["SharedTestSupport"]),
     .library(name: "SharedViews", targets: ["SharedViews"]),
@@ -40,6 +40,7 @@ let package = Package(
     .target(
       name: "SharedMiddleware",
       dependencies: [
+        .target(name: "SharedModels"),
         .product(name: "Dependencies", package: "swift-dependencies"),
         .product(name: "URLRouting", package: "swift-url-routing"),
         .product(name: "Vapor", package: "vapor"),
@@ -135,6 +136,7 @@ let package = Package(
       name: "UserViewController",
       dependencies: [
         .target(name: "AuthClient"),
+        .target(name: "LoggingDependency"),
         .target(name: "SharedDatabase"),
         .target(name: "SharedModels"),
         .target(name: "SharedViews"),

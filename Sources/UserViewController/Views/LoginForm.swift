@@ -20,11 +20,17 @@ struct LoginForm: HTML, Sendable {
     return .signup(.index)
   }
 
+  private var signupRoute: UserRoute {
+    if style == .signup {
+      return .login(.index(next: next))
+    }
+    return .signup(.index)
+  }
+
   var body: some HTML {
-    Modal(id: "loginForm", open: false, displayCloseButton: false) {
+    Modal(id: "loginForm", open: true, displayCloseButton: false) {
       div(.class("flex justify-between")) {
         h1(.class("text-2xl font-bold mb-6")) { style.title }
-        // FIX: Privacy policy route
         a(
           .class("btn btn-link"),
           .href(route: SharedRoute.privacyPolicy),
@@ -40,7 +46,7 @@ struct LoginForm: HTML, Sendable {
       ) {
 
         if let next {
-          input(.class("hidden"), .name("next"), .value(next))
+          input(.class("hidden"), .name("next"), .value(next), .id("next"))
         }
 
         div {
@@ -48,7 +54,8 @@ struct LoginForm: HTML, Sendable {
             SVG.email
             input(
               .type(.email), .placeholder("Email"), .required,
-              .name("email"), .id("email"), .autofocus
+              .name("email"), .id("email"), .autofocus,
+              .autocomplete("email")
             )
           }
           div(.class("validator-hint hidden")) { "Enter valid email address." }
@@ -61,6 +68,7 @@ struct LoginForm: HTML, Sendable {
               .type(.password), .placeholder("Password"), .required,
               .pattern(.password), .minlength(8),
               .name("password"), .id("password"),
+              .autocomplete(style == .login ? "current-password" : "new-password")
             )
           }
         }
@@ -73,6 +81,7 @@ struct LoginForm: HTML, Sendable {
                 .type(.password), .placeholder("Confirm Password"), .required,
                 .pattern(.password), .minlength(8),
                 .name("confirmPassword"), .id("confirmPassword"),
+                .autocomplete("new-password")
               )
             }
           }
@@ -98,10 +107,10 @@ struct LoginForm: HTML, Sendable {
         div(.class("flex justify-center")) {
           a(
             .class("btn btn-link"),
-            .href(
-              route: style == .signup
-                ? UserRoute.login(.index(next: next)) : UserRoute.signup(.index)
-            )
+            .hx.get(route: signupRoute),
+            .hx.target("#loginForm"),
+            .hx.swap(.outerHTML),
+            .hx.pushURL(true)
           ) {
             style == .login ? "Sign Up" : "Login"
           }

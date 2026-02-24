@@ -29,5 +29,6 @@
 		"SWIFT_BACKTRACE": "enable=no"
 	},
   "remoteUser": "swift",
+	"forwardPorts":  [8088]
 }
 	

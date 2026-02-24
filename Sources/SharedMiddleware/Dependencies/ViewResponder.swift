@@ -20,12 +20,14 @@ enum ViewResponderKey: DependencyKey {
 }
 
 struct UnimplementedViewResponder: ViewResponder {
+
   func respond(_ viewResponse: ViewResponse) async throws -> any AsyncResponseEncodable {
     unimplemented(placeholder: AnyHTMLResponse(value: EmptyHTML()))
   }
 }
 
 struct DefaultViewResponder: ViewResponder {
+
   func respond(_ viewResponse: ViewResponse) async throws -> any AsyncResponseEncodable {
     @Dependency(\.mainPage) var mainPage
     guard viewResponse.isHtmxRequest else {

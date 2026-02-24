@@ -3,6 +3,7 @@ import Foundation
 @preconcurrency import URLRouting
 
 // TODO: Add update password route.
+// TODO: Signup route should have a 'next' property too.
 public enum UserRoute: Equatable, Sendable, Routeable {
   case login(Login)
   case logout

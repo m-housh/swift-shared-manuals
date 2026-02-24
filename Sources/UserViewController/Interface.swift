@@ -1,6 +1,7 @@
 import AuthClient
 import Dependencies
 import Elementary
+import LoggingDependency
 import SharedMiddleware
 import SharedModels
 import SharedViews
@@ -13,11 +14,13 @@ extension DependencyValues {
 }
 
 enum UserViewControllerKey: DependencyKey {
-  static var testValue: any ViewController<UserRoute> { UnimplementedUserViewController() }
+  static var testValue: any ViewController<UserRoute> {
+    UnimplementedUserViewController()
+  }
   static var liveValue: any ViewController<UserRoute> { LiveUserViewController() }
 }
 
-struct UnimplementedUserViewController: ViewController {
+struct UnimplementedUserViewController: ViewController, Sendable {
   typealias Route = UserRoute
 
   func view(request: ViewRequest<UserRoute>) async throws -> AnySendableHTML {
@@ -25,23 +28,25 @@ struct UnimplementedUserViewController: ViewController {
   }
 }
 
-struct LiveUserViewController: ViewController {
+struct LiveUserViewController: ViewController, Sendable {
   typealias Route = UserRoute
 
+  @HTMLBuilder
   func view(request: ViewRequest<UserRoute>) async throws -> AnySendableHTML {
     @Dependency(\.auth) var auth
+    @Dependency(\.logger) var logger
 
     switch request.route {
     case .login(let route):
       switch route {
       case .index(let next):
-        return LoginForm(style: .login, next: next)
+        LoginForm(style: .login, next: next)
       case .submit(let form):
         fatalError()
       }
 
     case .logout:
-      return await ResultView {
+      await ResultView {
         try auth.logout()
       }
 
@@ -51,7 +56,7 @@ struct LiveUserViewController: ViewController {
     case .signup(let route):
       switch route {
       case .index:
-        return LoginForm(style: .signup)
+        LoginForm(style: .signup)
       case .submit(let form):
         fatalError()
       }
