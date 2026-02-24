@@ -12,6 +12,7 @@ let package = Package(
     .library(name: "SharedModels", targets: ["SharedModels"]),
     .library(name: "SharedTestSupport", targets: ["SharedTestSupport"]),
     .library(name: "SharedViews", targets: ["SharedViews"]),
+    .library(name: "UserViewController", targets: ["UserViewController"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-log.git", from: "1.6.0"),
@@ -25,6 +26,7 @@ let package = Package(
     .package(url: "https://github.com/vapor/vapor.git", from: "4.110.1"),
     .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
     .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.6.0"),
+    .package(url: "https://github.com/vapor-community/vapor-elementary.git", from: "0.1.0"),
   ],
   targets: [
     .target(
@@ -41,6 +43,7 @@ let package = Package(
         .product(name: "Dependencies", package: "swift-dependencies"),
         .product(name: "URLRouting", package: "swift-url-routing"),
         .product(name: "Vapor", package: "vapor"),
+        .product(name: "VaporElementary", package: "vapor-elementary"),
         .product(name: "VaporRouting", package: "vapor-routing"),
       ]
     ),
@@ -126,6 +129,16 @@ let package = Package(
       name: "SharedRouteTests",
       dependencies: [
         .target(name: "SharedModels")
+      ]
+    ),
+    .target(
+      name: "UserViewController",
+      dependencies: [
+        .target(name: "AuthClient"),
+        .target(name: "SharedDatabase"),
+        .target(name: "SharedModels"),
+        .target(name: "SharedViews"),
+        .target(name: "SharedMiddleware"),
       ]
     ),
   ]

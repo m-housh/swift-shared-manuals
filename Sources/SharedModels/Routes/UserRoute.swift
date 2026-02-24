@@ -26,7 +26,7 @@ public enum UserRoute: Equatable, Sendable, Routeable {
   }
 
   public enum Login: Equatable, Sendable {
-    case index
+    case index(next: String? = nil)
     case submit(User.Login)
 
     static let path = "login"
@@ -34,6 +34,11 @@ public enum UserRoute: Equatable, Sendable, Routeable {
     static let router = OneOf {
       Route(.case(Self.index)) {
         Path { path }
+        Query {
+          Optionally {
+            Field("next", .string)
+          }
+        }
         Method.get
       }
       Route(.case(Self.submit)) {

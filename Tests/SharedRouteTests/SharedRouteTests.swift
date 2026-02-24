@@ -28,7 +28,10 @@ struct SharedRouteTests {
   func loginIndex() throws {
     let request = URLRequestData(method: "GET", path: "/login")
     let route = try UserRoute.router.match(request: .init(data: request)!)
-    #expect(route == .login(.index))
+    #expect(route == .login(.index()))
+
+    let route2 = try UserRoute.router.match(url: URL(string: "/login?next=foo")!)
+    #expect(route2 == .login(.index(next: "foo")))
   }
 
   @Test
