@@ -2,12 +2,10 @@ import AuthClient
 import Dependencies
 import Fluent
 import FluentSQLiteDriver
-import LoggingDependency
 import SharedDatabase
 import SharedMiddleware
 import SharedModels
 @preconcurrency import URLRouting
-import UserViewController
 import Vapor
 
 // configures your application
@@ -63,6 +61,19 @@ private func addMiddleware(
 func addRoutes(
   to app: Application
 ) {
-  @Dependency(\.userViewController) var viewController
-  app.mount(controller: viewController)
+  app.mount(
+    controller: SiteViewController(),
+    routeMiddleware: { route in
+      switch route {
+      case .user(.login), .user(.signup):
+        return nil
+      case .home, .user(.profile), .user(.logout):
+        return [
+          User.passwordAuth(),
+          User.sessionAuth(),
+          User.redirectMiddleware(path: "/login"),
+        ]
+      }
+    }
+  )
 }

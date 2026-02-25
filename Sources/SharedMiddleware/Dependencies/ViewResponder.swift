@@ -10,7 +10,16 @@ extension DependencyValues {
   }
 }
 
+/// Represents a type that can transform a view response (html) to
+/// a vapor `Response` type.
+///
+///
 public protocol ViewResponder: Sendable {
+
+  /// Transform the view response into a vapor `Response`.
+  ///
+  /// - Parameters:
+  ///   - viewResponse: The view response to transform.
   func respond(_ viewResponse: ViewResponse) async throws -> any AsyncResponseEncodable
 }
 

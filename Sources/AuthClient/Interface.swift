@@ -1,6 +1,5 @@
 import Dependencies
 import DependenciesMacros
-import LoggingDependency
 import SharedDatabase
 import SharedModels
 import Vapor

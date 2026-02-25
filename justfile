@@ -1,6 +1,10 @@
 docker_image := "swift-shared-manuals"
 docker_tag := "latest"
 
+[private]
+default:
+	@just --list
+
 clean:
 	rm -rf .build
 

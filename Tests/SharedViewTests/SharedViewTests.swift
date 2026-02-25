@@ -4,7 +4,7 @@ import Elementary
 import ElementaryHTMX
 import Foundation
 import SharedTestSupport
-import SharedViews
+import SharedStyleguide
 import SnapshotTesting
 import Testing
 @preconcurrency import URLRouting
@@ -87,7 +87,7 @@ struct SharedViewTests {
 
   @Test
   func svg() {
-    assertSnapshot(of: SVG.close, as: .html)
+    assertSnapshot(of: SVG(.close), as: .html)
   }
 
   @Test

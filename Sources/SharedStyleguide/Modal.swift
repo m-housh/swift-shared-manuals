@@ -9,16 +9,30 @@ public struct Modal<Inner: HTML>: HTML {
   private let inner: Inner
   private let isOpen: Bool
 
+  init(
+    id: String,
+    open isOpen: Bool = false,
+    displayCloseButton: Bool = true,
+    body: Inner
+  ) {
+    self.displayCloseButton = displayCloseButton
+    self.id = id
+    self.inner = body
+    self.isOpen = isOpen
+  }
+
   public init(
     id: String,
     open isOpen: Bool = false,
     displayCloseButton: Bool = true,
     @HTMLBuilder body: () -> Inner
   ) {
-    self.displayCloseButton = displayCloseButton
-    self.id = id
-    self.inner = body()
-    self.isOpen = isOpen
+    self.init(
+      id: id,
+      open: isOpen,
+      displayCloseButton: displayCloseButton,
+      body: body()
+    )
   }
 
   public var body: some HTML<HTMLTag.dialog> {
@@ -29,15 +43,32 @@ public struct Modal<Inner: HTML>: HTML {
             .class("btn btn-sm btn-circle btn-ghost absolute right-2 top-2"),
             .on(.click, "\(id).close")
           ) {
-            SVG.close
+            SVG(.close)
           }
         }
         inner
       }
     }
-      .attributes(.class("modal-open"), when: isOpen)
+    .attributes(.class("modal-open"), when: isOpen)
   }
 
 }
 
 extension Modal: Sendable where Inner: Sendable {}
+
+extension Modal where Inner: Identifiable, Inner.ID == String {
+
+  public init(
+    open isOpen: Bool = false,
+    displayCloseButton: Bool = true,
+    @HTMLBuilder body: () -> Inner
+  ) {
+    let body = body()
+    self.init(
+      id: body.id,
+      open: isOpen,
+      displayCloseButton: displayCloseButton,
+      body: body
+    )
+  }
+}

@@ -1,3 +1,4 @@
+import Dependencies
 import Elementary
 import ElementaryHTMX
 import Foundation
@@ -6,8 +7,17 @@ import SharedModels
 
 struct MyMainPage: MainPage {
   func embed(html: AnySendableHTML) async throws -> any SendableHTMLDocument {
+    @Dependency(\.auth) var auth
+    @Dependency(\.sharedDatabase) var database
+
+    var theme: Theme? = nil
     let htmlString = try await html.renderAsync()
-    return MainPageView {
+    let currentUser = try? auth.currentUser()
+    if let currentUser {
+      theme = try await database.userProfiles.theme(currentUser.id)
+    }
+
+    return MainPageView(theme: theme) {
       HTMLRaw(htmlString)
     }
   }

@@ -1,16 +1,27 @@
 import Elementary
 import ElementaryHTMX
 import SharedModels
-import SharedViews
+import SharedStyleguide
 
-struct LoginForm: HTML, Sendable {
+public struct LoginForm: HTML, Sendable, Identifiable {
+  static let id = "loginForm"
 
-  let style: Style
-  let next: String?
+  public var id: String { Self.id }
+
+  private let style: Style
+  private let next: String?
 
   init(style: Style = .login, next: String? = nil) {
     self.style = style
     self.next = next
+  }
+
+  public init(next: String? = nil) {
+    self.init(style: .login, next: next)
+  }
+
+  public init<R: Routeable>(next route: R) {
+    self.init(style: .login, next: R.router.path(for: route))
   }
 
   private var route: UserRoute {
@@ -27,8 +38,8 @@ struct LoginForm: HTML, Sendable {
     return .signup(.index)
   }
 
-  var body: some HTML {
-    Modal(id: "loginForm", open: true, displayCloseButton: false) {
+  public var body: some HTML<HTMLTag.div> {
+    div {
       div(.class("flex justify-between")) {
         h1(.class("text-2xl font-bold mb-6")) { style.title }
         a(
@@ -41,6 +52,7 @@ struct LoginForm: HTML, Sendable {
       }
 
       form(
+        .action(route: route),
         .method(.post),
         .class("space-y-4")
       ) {
@@ -51,7 +63,7 @@ struct LoginForm: HTML, Sendable {
 
         div {
           label(.class("input validator w-full")) {
-            SVG.email
+            SVG(.email)
             input(
               .type(.email), .placeholder("Email"), .required,
               .name("email"), .id("email"), .autofocus,
@@ -63,7 +75,7 @@ struct LoginForm: HTML, Sendable {
 
         div {
           label(.class("input validator w-full")) {
-            SVG.key
+            SVG(.key)
             input(
               .type(.password), .placeholder("Password"), .required,
               .pattern(.password), .minlength(8),
@@ -76,7 +88,7 @@ struct LoginForm: HTML, Sendable {
         if style == .signup {
           div {
             label(.class("input validator w-full")) {
-              SVG.key
+              SVG(.key)
               input(
                 .type(.password), .placeholder("Confirm Password"), .required,
                 .pattern(.password), .minlength(8),
@@ -108,7 +120,7 @@ struct LoginForm: HTML, Sendable {
           a(
             .class("btn btn-link"),
             .hx.get(route: signupRoute),
-            .hx.target("#loginForm"),
+            .hx.target(id: id),
             .hx.swap(.outerHTML.swap("1s")),
             .hx.pushURL(true)
           ) {

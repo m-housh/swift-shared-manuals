@@ -3,7 +3,6 @@ import Dependencies
 import Fluent
 import FluentSQLiteDriver
 import Foundation
-import LoggingDependency
 import SharedDatabase
 import SharedModels
 import SharedTestSupport
@@ -133,8 +132,8 @@ private func withAppIncludingDB(
           return nil
         case .loggedIn:
           return [
-            UserPasswordAuthenticator(),
-            UserSessionAuthenticator(),
+            User.passwordAuth(),
+            User.sessionAuth(),
             User.guardMiddleware(),
           ]
         }

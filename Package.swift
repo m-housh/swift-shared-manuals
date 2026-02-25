@@ -6,13 +6,12 @@ let package = Package(
   name: "swift-shared-manuals",
   products: [
     .library(name: "AuthClient", targets: ["AuthClient"]),
-    .library(name: "LoggingDependency", targets: ["LoggingDependency"]),
     .library(name: "SharedDatabase", targets: ["SharedDatabase"]),
     .library(name: "SharedMiddleware", targets: ["SharedMiddleware"]),
     .library(name: "SharedModels", targets: ["SharedModels"]),
     .library(name: "SharedTestSupport", targets: ["SharedTestSupport"]),
+    .library(name: "SharedStyleguide", targets: ["SharedStyleguide"]),
     .library(name: "SharedViews", targets: ["SharedViews"]),
-    .library(name: "UserViewController", targets: ["UserViewController"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-log.git", from: "1.6.0"),
@@ -32,7 +31,6 @@ let package = Package(
     .target(
       name: "AuthClient",
       dependencies: [
-        .target(name: "LoggingDependency"),
         .target(name: "SharedDatabase"),
         .product(name: "Vapor", package: "vapor"),
       ]
@@ -60,17 +58,11 @@ let package = Package(
       ]
     ),
     .target(
-      name: "LoggingDependency",
-      dependencies: [
-        .product(name: "Dependencies", package: "swift-dependencies"),
-        .product(name: "Logging", package: "swift-log"),
-      ]
-    ),
-    .target(
       name: "SharedModels",
       dependencies: [
         .product(name: "Dependencies", package: "swift-dependencies"),
         .product(name: "DependenciesMacros", package: "swift-dependencies"),
+        .product(name: "Logging", package: "swift-log"),
         .product(name: "URLRouting", package: "swift-url-routing"),
         .product(name: "Vapor", package: "vapor"),
       ],
@@ -104,7 +96,7 @@ let package = Package(
       ]
     ),
     .target(
-      name: "SharedViews",
+      name: "SharedStyleguide",
       dependencies: [
         .target(name: "SharedModels"),
         .product(name: "Elementary", package: "elementary"),
@@ -114,7 +106,7 @@ let package = Package(
     .testTarget(
       name: "SharedViewTests",
       dependencies: [
-        .target(name: "SharedViews"),
+        .target(name: "SharedStyleguide"),
         .target(name: "SharedTestSupport"),
         .product(name: "DependenciesTestSupport", package: "swift-dependencies"),
       ],
@@ -129,13 +121,12 @@ let package = Package(
       ]
     ),
     .target(
-      name: "UserViewController",
+      name: "SharedViews",
       dependencies: [
         .target(name: "AuthClient"),
-        .target(name: "LoggingDependency"),
         .target(name: "SharedDatabase"),
         .target(name: "SharedModels"),
-        .target(name: "SharedViews"),
+        .target(name: "SharedStyleguide"),
         .target(name: "SharedMiddleware"),
       ]
     ),

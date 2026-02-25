@@ -2,21 +2,33 @@ import Elementary
 
 /// Represents an svg image.
 ///
-/// > NOTE: This is typically extend with a static implementation for the given
-/// svg.
 public struct SVG: HTML, Sendable {
-  private let svg: String
+  private let svg: Key
 
-  public init(_ svg: String) {
+  public init(_ rawValue: String) {
+    self.svg = .init(rawValue)
+  }
+
+  public init(_ svg: Key) {
     self.svg = svg
   }
 
   public var body: some HTML {
-    HTMLRaw(svg)
+    HTMLRaw(svg.rawValue)
+  }
+
+  /// > NOTE: This is typically extend with a static implementation for the given
+  /// svg.
+  public struct Key: Sendable {
+    let rawValue: String
+
+    public init(_ rawValue: String) {
+      self.rawValue = rawValue
+    }
   }
 }
 
-extension SVG {
+extension SVG.Key {
   public static let close = Self(
     """
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>

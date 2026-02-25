@@ -1,7 +1,7 @@
 import Dependencies
 import Vapor
 
-public protocol URLRouteController: Sendable {
+public protocol URLRouteResponder: Sendable {
   associatedtype Route
 
   /// Generate a vapor `Response` for the given route.

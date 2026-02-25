@@ -2,7 +2,7 @@ import AuthClient
 import Dependencies
 import Fluent
 import FluentSQLiteDriver
-import LoggingDependency
+import SharedModels
 import SharedDatabase
 import SharedMiddleware
 import Vapor

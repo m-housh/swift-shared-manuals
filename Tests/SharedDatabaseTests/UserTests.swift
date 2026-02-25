@@ -101,15 +101,21 @@ struct UserTests {
           streetAddress: "12345 Sesame St",
           city: "Nowhere",
           state: "FL",
-          zipCode: "55555"
+          zipCode: "55555",
+          theme: .dark
         )
       )
+
+      #expect(profile.theme == .dark)
 
       let fetched = try await profiles.fetch(user.id)
       #expect(fetched == profile)
 
       let got = try await profiles.get(profile.id)
       #expect(got == profile)
+
+      let theme = try await profiles.theme(profile.userID)
+      #expect(theme == .dark)
 
       let updated = try await profiles.update(profile.id, .init(firstName: "Updated"))
       #expect(updated.firstName == "Updated")

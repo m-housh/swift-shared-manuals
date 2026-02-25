@@ -68,7 +68,6 @@ extension SharedDatabase.Users: TestDependencyKey {
   }
 }
 
-
 extension User {
   struct Migrate: AsyncMigration {
     let name = "CreateUser"
@@ -215,7 +214,25 @@ extension User: SessionAuthenticatable {
   public var sessionID: String { email }
 }
 
-public struct UserPasswordAuthenticator: AsyncBasicAuthenticator {
+extension User {
+
+  /// Password authentication middleware that can be used to protect routes.
+  public static func passwordAuth() -> any AsyncBasicAuthenticator {
+    UserPasswordAuthenticator()
+  }
+
+  /// Bearer token authentication middleware that can be used to protect routes.
+  public static func bearerAuth() -> any AsyncBearerAuthenticator {
+    UserTokenAuthenticator()
+  }
+
+  /// Session authentication middleware that can be used to protect routes.
+  public static func sessionAuth() -> any AsyncSessionAuthenticator {
+    UserSessionAuthenticator()
+  }
+}
+
+struct UserPasswordAuthenticator: AsyncBasicAuthenticator {
   public typealias User = SharedModels.User
 
   public init() {}
@@ -233,7 +250,7 @@ public struct UserPasswordAuthenticator: AsyncBasicAuthenticator {
   }
 }
 
-public struct UserTokenAuthenticator: AsyncBearerAuthenticator {
+struct UserTokenAuthenticator: AsyncBearerAuthenticator {
   public typealias User = SharedModels.User
 
   public init() {}
@@ -251,7 +268,7 @@ public struct UserTokenAuthenticator: AsyncBearerAuthenticator {
   }
 }
 
-public struct UserSessionAuthenticator: AsyncSessionAuthenticator {
+struct UserSessionAuthenticator: AsyncSessionAuthenticator {
   public typealias User = SharedModels.User
 
   public init() {}

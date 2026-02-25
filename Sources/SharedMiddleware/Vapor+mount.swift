@@ -150,7 +150,7 @@ where
   }
 }
 
-extension URLRouteController {
+extension URLRouteResponder {
   fileprivate func siteHandler(_ request: Request, _ route: Route) async throws
     -> any AsyncResponseEncodable
   {

@@ -30,6 +30,12 @@ public enum UserRoute: Equatable, Sendable, Routeable {
     case index(next: String? = nil)
     case submit(User.Login)
 
+    public static func index<R: Routeable>(
+      next route: R
+    ) -> Self {
+      .index(next: R.router.path(for: route))
+    }
+
     static let path = "login"
 
     static let router = OneOf {

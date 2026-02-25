@@ -12,7 +12,7 @@ let package = Package(
     .executableTarget(
       name: "dev-server",
       dependencies: [
-        .product(name: "UserViewController", package: "swift-shared-manuals"),
+        .product(name: "SharedViews", package: "swift-shared-manuals"),
         .product(name: "SharedDatabase", package: "swift-shared-manuals"),
         .product(name: "SharedMiddleware", package: "swift-shared-manuals"),
         .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),

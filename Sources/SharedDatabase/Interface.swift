@@ -28,6 +28,9 @@ public struct SharedDatabase: Sendable {
 
   @DependencyClient
   public struct Projects: Sendable {
+
+    public static var schema: String { ProjectModel.schema }
+
     public var create: @Sendable (User.ID, Project.Create) async throws -> Project
     public var delete: @Sendable (Project.ID) async throws -> Void
     public var get: @Sendable (Project.ID) async throws -> Project?
@@ -37,6 +40,9 @@ public struct SharedDatabase: Sendable {
 
   @DependencyClient
   public struct Users: Sendable {
+
+    public static var schema: String { UserModel.schema }
+
     public var create: @Sendable (User.Create) async throws -> User
     public var delete: @Sendable (User.ID) async throws -> Void
     public var get: @Sendable (User.ID) async throws -> User?
@@ -46,10 +52,13 @@ public struct SharedDatabase: Sendable {
 
   @DependencyClient
   public struct UserProfiles: Sendable {
+    public static var schema: String { UserProfileModel.schema }
+
     public var create: @Sendable (User.Profile.Create) async throws -> User.Profile
     public var delete: @Sendable (User.Profile.ID) async throws -> Void
     public var fetch: @Sendable (User.ID) async throws -> User.Profile?
     public var get: @Sendable (User.Profile.ID) async throws -> User.Profile?
+    public var theme: @Sendable (User.ID) async throws -> Theme?
     public var update: @Sendable (User.Profile.ID, User.Profile.Update) async throws -> User.Profile
   }
 

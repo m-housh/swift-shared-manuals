@@ -33,6 +33,16 @@ extension SharedDatabase.UserProfiles: TestDependencyKey {
         try await UserProfileModel.find(id, on: database)
           .map { try $0.toDTO() }
       },
+      theme: { id in
+        guard
+          let profile = try await UserProfileModel.query(on: database)
+            .field(\.$theme)
+            .filter(\.$user.$id == id)
+            .first(),
+          let theme = profile.theme
+        else { return nil }
+        return Theme(rawValue: theme)
+      },
       update: { id, updates in
         guard let model = try await UserProfileModel.find(id, on: database) else {
           throw NotFoundError()
