@@ -9,6 +9,7 @@ struct MyMainPage: MainPage {
   func embed(html: AnySendableHTML) async throws -> any SendableHTMLDocument {
     @Dependency(\.auth) var auth
     @Dependency(\.sharedDatabase) var database
+    @Dependency(\.logger) var logger
 
     var theme: Theme? = nil
     let htmlString = try await html.renderAsync()
@@ -16,6 +17,7 @@ struct MyMainPage: MainPage {
     if let currentUser {
       theme = try await database.userProfiles.theme(currentUser.id)
     }
+    logger.debug("Theme: \(String(describing: theme))")
 
     return MainPageView(theme: theme) {
       HTMLRaw(htmlString)
@@ -23,7 +25,7 @@ struct MyMainPage: MainPage {
   }
 }
 
-public struct MainPageView<Inner: HTML>: SendableHTMLDocument where Inner: Sendable {
+struct MainPageView<Inner: HTML>: SendableHTMLDocument where Inner: Sendable {
 
   public var title: String { "Dev Server" }
   public var lang: String { "en" }
@@ -42,7 +44,7 @@ public struct MainPageView<Inner: HTML>: SendableHTMLDocument where Inner: Senda
     self.inner = inner()
   }
 
-  public var head: some HTML {
+  var head: some HTML {
     meta(.charset(.utf8))
     meta(.name(.viewport), .content("width=device-width, initial-scale=1.0"))
     script(.src("https://unpkg.com/htmx.org@2.0.8")) {}
@@ -71,7 +73,7 @@ public struct MainPageView<Inner: HTML>: SendableHTMLDocument where Inner: Senda
     }
   }
 
-  public var body: some HTML {
+  var body: some HTML {
     div(.class("flex flex-col min-h-screen min-w-full justify-between")) {
       main(.class("flex flex-col min-h-screen min-w-full grow mb-auto")) {
         div(.id("content")) {

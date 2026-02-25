@@ -1,3 +1,4 @@
+import Foundation
 import SharedModels
 import Validations
 
@@ -13,7 +14,15 @@ extension User.Create: Validatable {
         .errorLabel("Password Count", inline: true)
 
       Validator.validate(\.confirmPassword, with: .equals(password))
+        .mapError(ConfirmPasswordError())
         .errorLabel("Confirm Password", inline: true)
     }
+  }
+}
+
+/// Need a custom error, or it risks exposing passwords in the error view.
+private struct ConfirmPasswordError: Error, LocalizedError {
+  var errorDescription: String? {
+    NSLocalizedString("Passwords do not match.", comment: "Confirm password error")
   }
 }

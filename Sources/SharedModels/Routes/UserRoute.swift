@@ -68,7 +68,7 @@ public enum UserRoute: Equatable, Sendable, Routeable {
 
   public enum Profile: Equatable, Sendable {
     case index(User.ID)
-    case update(User.ID, User.Profile.Update)
+    case update(User.Profile.ID, User.Profile.Update)
 
     static let path = "profile"
 
@@ -83,7 +83,7 @@ public enum UserRoute: Equatable, Sendable, Routeable {
       Route(.case(Self.update)) {
         Path {
           path
-          User.ID.parser()
+          User.Profile.ID.parser()
         }
         Method.patch
         Body {

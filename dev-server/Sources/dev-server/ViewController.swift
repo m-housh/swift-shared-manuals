@@ -59,6 +59,23 @@ struct SiteViewController: ViewController {
           HomePage(user: nil)
         }
 
+      case .profile(.index(let id)):
+        return await ResultView {
+          try await database.userProfiles.fetch(id)
+        } onSuccess: { profile in
+          Modal(open: true, displayCloseButton: false) {
+            UserProfileForm(userID: id, profile: profile)
+          }
+        }
+
+      case .profile(.update(let id, let form)):
+        return await ResultView {
+          let profile = try await database.userProfiles.update(id, form)
+          return try await database.users.get(profile.userID)
+        } onSuccess: { user in
+          HomePage(user: user)
+        }
+
       case .signup(.index):
         return Modal(open: true, displayCloseButton: false) {
           SignupForm()
@@ -79,8 +96,6 @@ struct SiteViewController: ViewController {
           HomePage(user: user)
         }
 
-      default:
-        fatalError()
       }
     }
   }
@@ -111,7 +126,7 @@ struct HomePage: HTML, Sendable {
   let user: User?
 
   var body: some HTML {
-    div(.class("flex justify-center items-center mt-10")) {
+    div(.class("flex justify-center items-center mt-10 space-x-2 space-y-4")) {
       if let user {
         div {
           h1(.class("text-3xl font-bold")) { "Welcome \(user.email)." }
@@ -123,9 +138,19 @@ struct HomePage: HTML, Sendable {
           ) {
             "Logout"
           }
+          button(
+            .class("btn btn-secondary"),
+            .hx.get(route: SiteRoute.user(.profile(.index(user.id)))),
+            .hx.target(id: "content"),
+            .hx.swap(.innerHTML)
+          ) {
+            "Profile"
+          }
         }
       } else {
-        LoginForm()
+        Modal(open: true, displayCloseButton: false) {
+          LoginForm()
+        }
       }
     }
   }

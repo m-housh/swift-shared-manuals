@@ -101,6 +101,7 @@ let package = Package(
         .target(name: "SharedModels"),
         .product(name: "Elementary", package: "elementary"),
         .product(name: "ElementaryHTMX", package: "elementary-htmx"),
+        .product(name: "Validations", package: "swift-validations"),
       ]
     ),
     .testTarget(

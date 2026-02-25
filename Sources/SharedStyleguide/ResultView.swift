@@ -1,5 +1,6 @@
 import Elementary
 import Foundation
+import Validations
 
 /// A helper view used when calling throwing functions in order to produce a valid view.
 ///
@@ -44,7 +45,9 @@ extension ResultView where Success: Sendable, SuccessView: Sendable {
   public init(
     catching value: @escaping @Sendable () async throws(Failure) -> Success,
     onSuccess successView: @escaping @Sendable (Success) -> SuccessView,
-    onFailure describeError: @escaping @Sendable (Failure) -> String = { $0.localizedDescription }
+    onFailure describeError: @escaping @Sendable (Failure) -> String = {
+      ($0 as? ValidationError)?.debugDescription ?? $0.localizedDescription
+    }
   ) async {
     self.init(
       result: await Result(catching: value),
@@ -58,7 +61,9 @@ extension ResultView where Success: HTML, SuccessView == Success {
 
   public init(
     catching value: @escaping @Sendable () async throws(Failure) -> SuccessView,
-    onFailure describeError: @escaping @Sendable (Failure) -> String = { $0.localizedDescription }
+    onFailure describeError: @escaping @Sendable (Failure) -> String = {
+      ($0 as? ValidationError)?.debugDescription ?? $0.localizedDescription
+    }
   ) async {
     self.init(
       result: await Result(catching: value),
@@ -71,7 +76,9 @@ extension ResultView where Success: HTML, SuccessView == Success {
 extension ResultView where Success == Void, SuccessView == EmptyHTML {
   public init(
     catching value: @escaping @Sendable () async throws(Failure) -> Void,
-    onFailure describeError: @escaping @Sendable (Failure) -> String = { $0.localizedDescription }
+    onFailure describeError: @escaping @Sendable (Failure) -> String = {
+      ($0 as? ValidationError)?.debugDescription ?? $0.localizedDescription
+    }
   ) async {
     self.init(
       result: await Result(catching: value),

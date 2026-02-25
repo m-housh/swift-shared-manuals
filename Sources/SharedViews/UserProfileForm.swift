@@ -89,61 +89,81 @@ public struct UserProfileForm: HTML, Sendable, Identifiable {
           input(.name("zipCode"), .value(profile?.zipCode), .required)
         }
 
-        div(.class("dropdown dropdown-top")) {
-          div(.class("input btn m-1 w-full"), .tabindex(0), .role(.init(rawValue: "button"))) {
-            "Theme"
-            SVG(.chevronDown)
-          }
-          ul(
-            .tabindex(-1),
-            .class("dropdown-content bg-base-300 rounded-box z-1 p-2 shadow-2xl")
-          ) {
-            li {
-              input(
-                .type(.radio),
-                .name("theme"),
-                .class("theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"),
-                .init(name: "aria-label", value: "Default"),
-                .value("default")
-              )
-              .attributes(.checked, when: profile?.theme == .default)
+        // Hidden theme controller.
+        input(
+          .class("checkbox hidden theme-controller"),
+          .type(.checkbox),
+          .id("theme-control"),
+          .value(profile?.theme?.rawValue),
+          .checked
+        )
+
+        label(.class("select w-full")) {
+          span(.class("label")) { "Theme" }
+          Select(
+            [
+              "Default": [Theme.default],
+              "Light": Theme.lightThemes,
+              "Dark": Theme.darkThemes,
+            ],
+            placeholder: "Optional theme",
+            value: { $0.rawValue },
+            selected: { profile?.theme == $0 },
+            makeLabel: { theme in
+              HTMLText(theme.rawValue.capitalized)
             }
-            li {
-              span(.class("text-sm font-bold text-gray-400")) {
-                "Light"
-              }
-            }
-            for theme in Theme.lightThemes {
-              li {
-                input(
-                  .type(.radio),
-                  .name("theme"),
-                  .class("theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"),
-                  .init(name: "aria-label", value: "\(theme.rawValue.capitalized)"),
-                  .value(theme.rawValue)
-                )
-                .attributes(.checked, when: profile?.theme == theme)
-              }
-            }
-            li {
-              span(.class("text-sm font-bold text-gray-400")) {
-                "Dark"
-              }
-            }
-            for theme in Theme.darkThemes {
-              li {
-                input(
-                  .type(.radio),
-                  .name("theme"),
-                  .class("theme-controller w-full btn btn-sm btn-block btn-ghost justify-start"),
-                  .init(name: "aria-label", value: "\(theme.rawValue.capitalized)"),
-                  .value(theme.rawValue)
-                )
-                .attributes(.checked, when: profile?.theme == theme)
-              }
-            }
-          }
+          )
+          .attributes(
+            .id("theme"),
+            .name("theme"),
+            .on(
+              .change,
+              """
+              (function() {
+                const checkbox = document.getElementById('theme-control');
+                const select = document.getElementById('theme');
+                checkbox.value = select.value;
+              })();
+              """
+            )
+          )
         }
+
+        //   select(
+        //     .id("theme"), .name("theme"),
+        //     .on(
+        //       .change,
+        //       """
+        //       (function() {
+        //         const checkbox = document.getElementById('theme-control');
+        //         const select = document.getElementById('theme');
+        //         checkbox.value = select.value;
+        //       })();
+        //       """
+        //     )
+        //   ) {
+        //     // Placeholder.
+        //     option(.selected, .disabled) { "Optional theme" }
+        //       .attributes(.hidden, when: profile?.theme != nil)
+        //
+        //     option(.value("default")) { "Default" }
+        //
+        //     option(.disabled) { "Light" }
+        //     for item in Theme.lightThemes {
+        //       option(.value(item.rawValue)) {
+        //         item.rawValue.capitalized
+        //       }
+        //       .attributes(.selected, when: profile?.theme == item)
+        //     }
+        //     option(.disabled) { "Dark" }
+        //     for item in Theme.darkThemes {
+        //       option(.value(item.rawValue)) {
+        //         item.rawValue.capitalized
+        //       }
+        //       .attributes(.selected, when: profile?.theme == item)
+        //     }
+        //   }
+        // }
 
         SubmitButton()
           .attributes(.class("btn-block"))
