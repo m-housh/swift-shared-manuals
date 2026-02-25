@@ -68,7 +68,6 @@ public enum UserRoute: Equatable, Sendable, Routeable {
 
   public enum Profile: Equatable, Sendable {
     case index(User.ID)
-    case submit(User.Profile.Create)
     case update(User.ID, User.Profile.Update)
 
     static let path = "profile"
@@ -80,26 +79,6 @@ public enum UserRoute: Equatable, Sendable, Routeable {
           User.ID.parser()
         }
         Method.get
-      }
-      Route(.case(Self.submit)) {
-        Path { path }
-        Method.post
-        Body {
-          FormData {
-            Field("userID") { User.ID.parser() }
-            Field("firstName", .string)
-            Field("lastName", .string)
-            Field("companyName", .string)
-            Field("streetAddress", .string)
-            Field("city", .string)
-            Field("state", .string)
-            Field("zipCode", .string)
-            Optionally {
-              Field("theme") { Theme.parser() }
-            }
-          }
-          .map(.memberwise(User.Profile.Create.init))
-        }
       }
       Route(.case(Self.update)) {
         Path {
@@ -143,6 +122,7 @@ public enum UserRoute: Equatable, Sendable, Routeable {
   public enum Signup: Equatable, Sendable {
     case index
     case submit(User.Create)
+    case submitProfile(User.Profile.Create)
 
     static let path = "signup"
 
@@ -161,6 +141,29 @@ public enum UserRoute: Equatable, Sendable, Routeable {
             Field("confirmPassword", .string)
           }
           .map(.memberwise(User.Create.init))
+        }
+      }
+      Route(.case(Self.submitProfile)) {
+        Path {
+          path
+          "profile"
+        }
+        Method.post
+        Body {
+          FormData {
+            Field("userID") { User.ID.parser() }
+            Field("firstName", .string)
+            Field("lastName", .string)
+            Field("companyName", .string)
+            Field("streetAddress", .string)
+            Field("city", .string)
+            Field("state", .string)
+            Field("zipCode", .string)
+            Optionally {
+              Field("theme") { Theme.parser() }
+            }
+          }
+          .map(.memberwise(User.Profile.Create.init))
         }
       }
     }

@@ -26,8 +26,9 @@ struct SiteViewController: ViewController {
   typealias Route = SiteRoute
 
   func view(request: ViewRequest<SiteRoute>) async throws -> AnySendableHTML {
-    @Dependency(\.logger) var logger
     @Dependency(\.auth) var auth
+    @Dependency(\.sharedDatabase) var database
+    @Dependency(\.logger) var logger
 
     switch request.route {
 
@@ -66,7 +67,15 @@ struct SiteViewController: ViewController {
         return await ResultView {
           try await auth.createAndLogin(form)
         } onSuccess: { user in
-          // LoggedIn(next: nil)
+          Modal(open: true, displayCloseButton: false) {
+            UserProfileForm(userID: user.id, signup: true)
+          }
+        }
+      case .signup(.submitProfile(let profile)):
+        return await ResultView {
+          let profile = try await database.userProfiles.create(profile)
+          return try await database.users.get(profile.userID)
+        } onSuccess: { user in
           HomePage(user: user)
         }
 
