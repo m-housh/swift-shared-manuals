@@ -15,10 +15,9 @@ import VaporRouting
 //     default: return BearerAuthMiddleware()
 //   },
 //   use: { request, route in
-//     // route handline
+//     // route handling
 //   }
 // )
-
 extension Application {
   /// Mounts a router to the Vapor application.
   ///
@@ -30,18 +29,30 @@ extension Application {
   ///   - closure: A closure that takes a `Request` and the router's output as arguments.
   public func mount<R: Parser>(
     _ router: R,
-    middleware: @escaping @Sendable (R.Output) -> [any Middleware]? = { _ in nil },
+    routeMiddleware middleware: @escaping @Sendable (R.Output) -> [any Middleware]? = { _ in nil },
     use closure: @escaping @Sendable (Request, R.Output) async throws -> any AsyncResponseEncodable
   ) where R.Input == URLRequestData, R: Sendable, R.Output: Sendable {
     self.middleware.use(
-      AsyncRoutingMiddleware(router: router, middleware: middleware, respond: closure)
+      AsyncRoutingMiddleware(
+        router: router,
+        middleware: middleware,
+        respond: closure
+      )
     )
   }
 
+  /// Mounts a router and route controller to the Vapor application.
+  ///
+  /// See ``VaporRouting`` for more information on usage.
+  ///
+  /// - Parameters:
+  ///   - router: A parser-printer that works on inputs of `URLRequestData`.
+  ///   - controller: A route controller that takes a `Request` and the router's output and generates a response.
+  ///   - middleware: A closure for providing any per-route middlewares to be run before processing the request.
   public func mount<R: Parser, V: ViewController>(
     _ router: R,
     controller: V,
-    middleware: @escaping @Sendable (V.Route) -> [any Middleware]? = { _ in nil }
+    routeMiddleware middleware: @escaping @Sendable (V.Route) -> [any Middleware]? = { _ in nil }
   )
   where
     R.Output == V.Route,
@@ -52,13 +63,32 @@ extension Application {
   {
     mount(
       router,
-      middleware: middleware,
-      use: { request, route in
-        @Dependency(\.viewResponder) var viewResponder
-        return try await viewResponder.respond(
-          controller.viewResponse(request, route)
-        )
-      }
+      routeMiddleware: middleware,
+      use: controller.siteHandler
+    )
+  }
+
+  /// Mounts a router and route controller to the Vapor application.
+  ///
+  /// See ``VaporRouting`` for more information on usage.
+  ///
+  /// - Parameters:
+  ///   - controller: A route controller that takes a `Request` and the router's output and generates a response.
+  ///   - middleware: A closure for providing any per-route middlewares to be run before processing the request.
+  public func mount<C: ViewController>(
+    controller: C,
+    routeMiddleware middleware: @escaping @Sendable (C.Route) -> [any Middleware]? = { _ in nil }
+  )
+  where
+    C: Sendable,
+    C.Route: Routeable,
+    C.Route.Router: Sendable,
+    C.Route.Router.Output: Sendable
+  {
+    mount(
+      C.Route.router,
+      routeMiddleware: middleware,
+      use: controller.siteHandler
     )
   }
 }
@@ -117,5 +147,13 @@ where
     } else {
       return try await respond(request, route).encodeResponse(for: request)
     }
+  }
+}
+
+extension URLRouteController {
+  fileprivate func siteHandler(_ request: Request, _ route: Route) async throws
+    -> any AsyncResponseEncodable
+  {
+    try await respond(to: route, on: request)
   }
 }

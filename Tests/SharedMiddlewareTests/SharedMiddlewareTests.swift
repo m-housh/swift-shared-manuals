@@ -127,7 +127,7 @@ private func withAppIncludingDB(
     app.middleware.use(app.sessions.middleware)
     app.mount(
       TestRoute.router,
-      middleware: { route in
+      routeMiddleware: { route in
         switch route {
         case .createUser:
           return nil

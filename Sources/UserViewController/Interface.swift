@@ -31,7 +31,6 @@ struct UnimplementedUserViewController: ViewController, Sendable {
 struct LiveUserViewController: ViewController, Sendable {
   typealias Route = UserRoute
 
-  @HTMLBuilder
   func view(request: ViewRequest<UserRoute>) async throws -> AnySendableHTML {
     @Dependency(\.auth) var auth
     @Dependency(\.logger) var logger
@@ -40,13 +39,14 @@ struct LiveUserViewController: ViewController, Sendable {
     case .login(let route):
       switch route {
       case .index(let next):
-        LoginForm(style: .login, next: next)
+        return LoginForm(style: .login, next: next)
       case .submit(let form):
+        let user = try await auth.login(form)
         fatalError()
       }
 
     case .logout:
-      await ResultView {
+      return await ResultView {
         try auth.logout()
       }
 
@@ -56,7 +56,7 @@ struct LiveUserViewController: ViewController, Sendable {
     case .signup(let route):
       switch route {
       case .index:
-        LoginForm(style: .signup)
+        return LoginForm(style: .signup)
       case .submit(let form):
         fatalError()
       }

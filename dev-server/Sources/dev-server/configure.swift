@@ -64,8 +64,5 @@ func addRoutes(
   to app: Application
 ) {
   @Dependency(\.userViewController) var viewController
-  app.mount(
-    UserRoute.router,
-    controller: viewController
-  )
+  app.mount(controller: viewController)
 }
