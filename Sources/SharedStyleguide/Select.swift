@@ -1,3 +1,4 @@
+import Collections
 import Elementary
 import Foundation
 
@@ -9,7 +10,7 @@ public struct Select<Label: HTML, Element: Sendable>: HTML {
 
   enum SelectInput<E>: Sendable where E: Sendable {
     case array([E])
-    case dict([String: [E]])
+    case dict(OrderedDictionary<String, [E]>)
   }
 
   private let items: SelectInput<Element>
@@ -33,7 +34,7 @@ public struct Select<Label: HTML, Element: Sendable>: HTML {
   }
 
   public init(
-    _ items: [String: [Element]],
+    _ items: OrderedDictionary<String, [Element]>,
     placeholder: String? = nil,
     value: @escaping @Sendable (Element) -> String,
     selected isSelected: @escaping @Sendable (Element) -> Bool = { _ in false },

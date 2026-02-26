@@ -129,42 +129,6 @@ public struct UserProfileForm: HTML, Sendable, Identifiable {
           )
         }
 
-        //   select(
-        //     .id("theme"), .name("theme"),
-        //     .on(
-        //       .change,
-        //       """
-        //       (function() {
-        //         const checkbox = document.getElementById('theme-control');
-        //         const select = document.getElementById('theme');
-        //         checkbox.value = select.value;
-        //       })();
-        //       """
-        //     )
-        //   ) {
-        //     // Placeholder.
-        //     option(.selected, .disabled) { "Optional theme" }
-        //       .attributes(.hidden, when: profile?.theme != nil)
-        //
-        //     option(.value("default")) { "Default" }
-        //
-        //     option(.disabled) { "Light" }
-        //     for item in Theme.lightThemes {
-        //       option(.value(item.rawValue)) {
-        //         item.rawValue.capitalized
-        //       }
-        //       .attributes(.selected, when: profile?.theme == item)
-        //     }
-        //     option(.disabled) { "Dark" }
-        //     for item in Theme.darkThemes {
-        //       option(.value(item.rawValue)) {
-        //         item.rawValue.capitalized
-        //       }
-        //       .attributes(.selected, when: profile?.theme == item)
-        //     }
-        //   }
-        // }
-
         SubmitButton()
           .attributes(.class("btn-block"))
 

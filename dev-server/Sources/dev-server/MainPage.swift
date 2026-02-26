@@ -49,11 +49,15 @@ struct MainPageView<Inner: HTML>: SendableHTMLDocument where Inner: Sendable {
     meta(.name(.viewport), .content("width=device-width, initial-scale=1.0"))
     script(.src("https://unpkg.com/htmx.org@2.0.8")) {}
     script(.src("https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4")) {}
-    HTMLRaw(
-      """
-      <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
-      <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
-      """
+    link(
+      .href("https://cdn.jsdelivr.net/npm/daisyui@5"),
+      .rel(.stylesheet),
+      .init(name: "type", value: "text/css")
+    )
+    link(
+      .href("https://cdn.jsdelivr.net/npm/daisyui@5/themes.css"),
+      .rel(.stylesheet),
+      .init(name: "type", value: "text/css")
     )
     script(
       .src("https://unpkg.com/htmx-remove@latest"),
@@ -74,14 +78,35 @@ struct MainPageView<Inner: HTML>: SendableHTMLDocument where Inner: Sendable {
   }
 
   var body: some HTML {
-    div(.class("flex flex-col min-h-screen min-w-full justify-between")) {
+    MainContent(inner, theme: theme)
+  }
+}
+
+struct MainContent<Inner: HTML>: HTML, Sendable where Inner: Sendable {
+  static var id: String { "content" }
+  let theme: Theme
+  let inner: Inner
+
+  init(theme: Theme? = nil, @HTMLBuilder body: () -> Inner) {
+    self.theme = theme ?? .default
+    self.inner = body()
+  }
+
+  init(_ body: Inner, theme: Theme? = nil) {
+    self.theme = theme ?? .default
+    self.inner = body
+  }
+
+  var body: some HTML<HTMLTag.div> {
+    div(
+      .id(Self.id),
+      .data("theme", value: theme.rawValue),
+      .class("flex flex-col min-h-screen min-w-full justify-between")
+    ) {
       main(.class("flex flex-col min-h-screen min-w-full grow mb-auto")) {
-        div(.id("content")) {
-          inner
-        }
+        inner
       }
     }
-    .attributes(.data("theme", value: theme?.rawValue ?? "default"), when: theme != nil)
-
   }
+
 }

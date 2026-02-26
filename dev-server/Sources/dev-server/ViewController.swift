@@ -91,9 +91,11 @@ struct SiteViewController: ViewController {
       case .signup(.submitProfile(let profile)):
         return await ResultView {
           let profile = try await database.userProfiles.create(profile)
-          return try await database.users.get(profile.userID)
-        } onSuccess: { user in
-          HomePage(user: user)
+          return profile.theme
+        } onSuccess: { theme in
+          MainContent(theme: theme) {
+            LoggedIn(next: nil)
+          }
         }
 
       }

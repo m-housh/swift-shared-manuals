@@ -15,6 +15,7 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-log.git", from: "1.6.0"),
+    .package(url: "https://github.com/apple/swift-collections.git", from: "1.3.0"),
     .package(url: "https://github.com/m-housh/swift-validations.git", from: "0.3.5"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.0.0"),
     .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.12.0"),
@@ -99,6 +100,7 @@ let package = Package(
       name: "SharedStyleguide",
       dependencies: [
         .target(name: "SharedModels"),
+        .product(name: "Collections", package: "swift-collections"),
         .product(name: "Elementary", package: "elementary"),
         .product(name: "ElementaryHTMX", package: "elementary-htmx"),
         .product(name: "Validations", package: "swift-validations"),
