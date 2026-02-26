@@ -67,7 +67,7 @@ func addRoutes(
       switch route {
       case .user(.login), .user(.signup):
         return nil
-      case .home, .user(.profile), .user(.logout):
+      case .home, .user(.profile), .user(.logout), .project:
         return [
           User.passwordAuth(),
           User.sessionAuth(),

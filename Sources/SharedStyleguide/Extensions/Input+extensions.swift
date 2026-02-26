@@ -70,7 +70,7 @@ extension HTMLAttribute where Tag == HTMLTag.input {
   /// Helper that requies an input field to match a given regex pattern.
   ///
   /// NOTE: This is used with `DaisyUI` validators.
-  public static func pattern(value: String) -> Self {
+  public static func pattern(_ value: String) -> Self {
     .init(name: "pattern", value: value)
   }
 
@@ -78,7 +78,7 @@ extension HTMLAttribute where Tag == HTMLTag.input {
   ///
   /// NOTE: This is used with `DaisyUI` validators.
   public static func pattern(_ type: PatternType) -> Self {
-    pattern(value: type.value)
+    pattern(type.value)
   }
 }
 

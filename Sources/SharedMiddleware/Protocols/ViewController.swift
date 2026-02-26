@@ -6,6 +6,7 @@ import Vapor
 public protocol ViewController<Route>: Sendable {
   associatedtype Route
   associatedtype View: HTML
+
   /// Respond to the given view request / route.
   ///
   /// - Parameters:
@@ -15,11 +16,8 @@ public protocol ViewController<Route>: Sendable {
 }
 
 extension ViewController where View: Sendable {
-  /// Uses the view responder dependency to transform the html output to
-  /// a `Response` for vapor.
-  ///
-  /// See: ``URLRouteResponder``
-  public func respond(
+
+  func respond(
     to route: Route,
     on request: Request
   ) async throws -> any AsyncResponseEncodable {

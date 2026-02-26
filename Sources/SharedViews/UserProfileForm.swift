@@ -33,7 +33,9 @@ public struct UserProfileForm: HTML, Sendable, Identifiable {
       return UserRoute.router.path(for: .signup(.index))
         .appendingPath("profile")
     }
-    return "/profile/\(profile.id)"
+    return UserRoute.router.path(for: .profile(userID, .index))
+      .appendingPath(profile.id.uuidString)
+    // return "/profile/\(profile.id)"
   }
 
   public var body: some HTML<HTMLTag.div> {

@@ -162,11 +162,3 @@ extension ViewController where View: Sendable {
     try await respond(to: route, on: request)
   }
 }
-
-extension URLRouteResponder {
-  fileprivate func siteHandler(_ request: Request, _ route: Route) async throws
-    -> any AsyncResponseEncodable
-  {
-    try await respond(to: route, on: request)
-  }
-}

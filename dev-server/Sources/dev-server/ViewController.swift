@@ -10,10 +10,15 @@ import SharedViews
 
 enum SiteRoute: Routeable {
   case home
+  case project
   case user(UserRoute)
 
   static let router = OneOf {
     Route(.case(Self.home)) {
+      Method.get
+    }
+    Route(.case(Self.project)) {
+      Path { "project" }
       Method.get
     }
     Route(.case(Self.user)) {
@@ -47,6 +52,12 @@ struct SiteViewController: ViewController {
         }
       }
 
+    case .project:
+      await ResultView {
+        ProjectForm()
+          .attributes(.class("p-10"))
+      }
+
     case .user(let route):
       switch route {
 
@@ -74,26 +85,29 @@ struct SiteViewController: ViewController {
           HomePage(user: nil)
         }
 
-      case .profile(.index(let id)):
-        await ResultView {
-          try await database.userProfiles.fetch(id)
-        } onSuccess: { profile in
-          Modal(open: true, displayCloseButton: false) {
-            UserProfileForm(userID: id, profile: profile)
+      case .profile(let userID, let route):
+        switch route {
+        case .index:
+          await ResultView {
+            try await database.userProfiles.fetch(userID)
+          } onSuccess: { profile in
+            Modal(open: true, displayCloseButton: false) {
+              UserProfileForm(userID: userID, profile: profile)
+            }
           }
-        }
+        case .update(let id, let form):
 
-      case .profile(.update(let id, let form)):
-        await ResultView {
-          logger.debug("Updating profile: \(form)")
-          let profile = try await database.userProfiles.update(id, form)
-          return (
-            try await database.users.get(profile.userID),
-            profile.theme
-          )
-        } onSuccess: { user, theme in
-          MainContent(theme: theme) {
-            HomePage(user: user)
+          await ResultView {
+            logger.debug("Updating profile: \(form)")
+            let profile = try await database.userProfiles.update(id, form)
+            return (
+              try await database.users.get(profile.userID),
+              profile.theme
+            )
+          } onSuccess: { user, theme in
+            MainContent(theme: theme) {
+              HomePage(user: user)
+            }
           }
         }
 
@@ -165,7 +179,7 @@ struct HomePage: HTML, Sendable {
           }
           button(
             .class("btn btn-secondary"),
-            .hx.get(route: SiteRoute.user(.profile(.index(user.id)))),
+            .hx.get(route: SiteRoute.user(.profile(user.id, .index))),
             .hx.target(id: "content"),
             .hx.swap(.innerHTML)
           ) {

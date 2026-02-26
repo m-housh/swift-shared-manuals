@@ -7,6 +7,11 @@ extension String {
     }
     return "\(self)\(path)"
   }
+
+  public func appendingPath(_ uuid: UUID?) -> String {
+    guard let uuid else { return self }
+    return appendingPath(uuid.uuidString)
+  }
 }
 
 extension UUID {

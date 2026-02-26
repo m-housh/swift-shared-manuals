@@ -7,7 +7,7 @@ import Foundation
 public enum UserRoute: Equatable, Sendable, Routeable {
   case login(Login)
   case logout
-  case profile(Profile)
+  case profile(User.ID, Profile)
   case signup(Signup)
 
   public static let router = OneOf {
@@ -19,6 +19,10 @@ public enum UserRoute: Equatable, Sendable, Routeable {
       Method.get
     }
     Route(.case(Self.profile)) {
+      Path {
+        "user"
+        User.ID.parser()
+      }
       Profile.router
     }
     Route(.case(Self.signup)) {
@@ -67,17 +71,14 @@ public enum UserRoute: Equatable, Sendable, Routeable {
   }
 
   public enum Profile: Equatable, Sendable {
-    case index(User.ID)
+    case index
     case update(User.Profile.ID, User.Profile.Update)
 
     static let path = "profile"
 
     static let router = OneOf {
       Route(.case(Self.index)) {
-        Path {
-          path
-          User.ID.parser()
-        }
+        Path { path }
         Method.get
       }
       Route(.case(Self.update)) {
