@@ -23,44 +23,59 @@ enum SiteRoute: Routeable {
 }
 
 struct SiteViewController: ViewController {
+  @Dependency(\.auth) var auth
+  @Dependency(\.sharedDatabase) var database
+  @Dependency(\.logger) var logger
+
   typealias Route = SiteRoute
 
-  func view(request: ViewRequest<SiteRoute>) async throws -> AnySendableHTML {
-    @Dependency(\.auth) var auth
-    @Dependency(\.sharedDatabase) var database
-    @Dependency(\.logger) var logger
-
+  @HTMLBuilder
+  func view(request: ViewRequest<SiteRoute>) async throws -> (some HTML & Sendable) {
     switch request.route {
-
     case .home:
-      let currentUser = try? auth.currentUser()
-      logger.debug("Current user: \(currentUser?.email ?? "nil")")
-      return HomePage(user: currentUser)
+      await ResultView {
+        var theme: Theme? = nil
+        let currentUser = try? auth.currentUser()
+        logger.debug("Current user: \(currentUser?.email ?? "nil")")
+        if let currentUser {
+          theme = try await database.userProfiles.theme(currentUser.id)
+        }
+        return (currentUser, theme)
+      } onSuccess: { user, theme in
+        MainContent(theme: theme) {
+          HomePage(user: user)
+        }
+      }
 
     case .user(let route):
       switch route {
 
       case .login(.index(next: let next)):
-        return Modal(open: true, displayCloseButton: false) {
-          LoginForm(next: next)
+        await ResultView {
+          Modal(open: true, displayCloseButton: false) {
+            LoginForm(next: next)
+          }
         }
       case .login(.submit(let form)):
-        return await ResultView {
-          _ = try await auth.login(form)
-          return form.next
-        } onSuccess: {
-          LoggedIn(next: $0)
+        await ResultView {
+          let user = try await auth.login(form)
+          let theme = try await database.userProfiles.theme(user.id)
+          return (form.next, theme)
+        } onSuccess: { (next, theme) in
+          MainContent(theme: theme) {
+            LoggedIn(next: next)
+          }
         }
 
       case .logout:
-        return await ResultView {
+        await ResultView {
           try auth.logout()
         } onSuccess: {
           HomePage(user: nil)
         }
 
       case .profile(.index(let id)):
-        return await ResultView {
+        await ResultView {
           try await database.userProfiles.fetch(id)
         } onSuccess: { profile in
           Modal(open: true, displayCloseButton: false) {
@@ -69,19 +84,27 @@ struct SiteViewController: ViewController {
         }
 
       case .profile(.update(let id, let form)):
-        return await ResultView {
+        await ResultView {
+          logger.debug("Updating profile: \(form)")
           let profile = try await database.userProfiles.update(id, form)
-          return try await database.users.get(profile.userID)
-        } onSuccess: { user in
-          HomePage(user: user)
+          return (
+            try await database.users.get(profile.userID),
+            profile.theme
+          )
+        } onSuccess: { user, theme in
+          MainContent(theme: theme) {
+            HomePage(user: user)
+          }
         }
 
       case .signup(.index):
-        return Modal(open: true, displayCloseButton: false) {
-          SignupForm()
+        await ResultView {
+          Modal(open: true, displayCloseButton: false) {
+            SignupForm()
+          }
         }
       case .signup(.submit(let form)):
-        return await ResultView {
+        await ResultView {
           try await auth.createAndLogin(form)
         } onSuccess: { user in
           Modal(open: true, displayCloseButton: false) {
@@ -89,7 +112,7 @@ struct SiteViewController: ViewController {
           }
         }
       case .signup(.submitProfile(let profile)):
-        return await ResultView {
+        await ResultView {
           let profile = try await database.userProfiles.create(profile)
           return profile.theme
         } onSuccess: { theme in

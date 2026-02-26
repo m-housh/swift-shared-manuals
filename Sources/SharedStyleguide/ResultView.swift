@@ -40,6 +40,16 @@ public struct ResultView<Success: Sendable, Failure: Error, SuccessView: HTML>: 
 
 extension ResultView: Sendable where SuccessView: Sendable, Failure: Sendable {}
 
+extension ResultView where Success == Void, Failure == Never, SuccessView: Sendable {
+  public init(@HTMLBuilder body: @escaping @Sendable () -> SuccessView) async {
+    await self.init(
+      catching: {},
+      onSuccess: body,
+      onFailure: { _ in fatalError() }
+    )
+  }
+}
+
 extension ResultView where Success: Sendable, SuccessView: Sendable {
 
   public init(

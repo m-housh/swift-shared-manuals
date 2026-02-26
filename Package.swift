@@ -26,7 +26,6 @@ let package = Package(
     .package(url: "https://github.com/vapor/vapor.git", from: "4.110.1"),
     .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
     .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.6.0"),
-    .package(url: "https://github.com/vapor-community/vapor-elementary.git", from: "0.1.0"),
   ],
   targets: [
     .target(
@@ -39,20 +38,19 @@ let package = Package(
     .target(
       name: "SharedMiddleware",
       dependencies: [
-        .target(name: "SharedModels"),
+        .target(name: "AuthClient"),
+        .target(name: "SharedDatabase"),
+        .target(name: "SharedViews"),
         .product(name: "Dependencies", package: "swift-dependencies"),
         .product(name: "URLRouting", package: "swift-url-routing"),
         .product(name: "Vapor", package: "vapor"),
-        .product(name: "VaporElementary", package: "vapor-elementary"),
         .product(name: "VaporRouting", package: "vapor-routing"),
       ]
     ),
     .testTarget(
       name: "SharedMiddlewareTests",
       dependencies: [
-        .target(name: "AuthClient"),
         .target(name: "SharedMiddleware"),
-        .target(name: "SharedDatabase"),
         .target(name: "SharedTestSupport"),
         .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
         .product(name: "VaporTesting", package: "vapor"),
@@ -130,7 +128,6 @@ let package = Package(
         .target(name: "SharedDatabase"),
         .target(name: "SharedModels"),
         .target(name: "SharedStyleguide"),
-        .target(name: "SharedMiddleware"),
       ]
     ),
   ]

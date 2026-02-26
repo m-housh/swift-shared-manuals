@@ -29,11 +29,11 @@ public struct UserProfileForm: HTML, Sendable, Identifiable {
   }
 
   var route: String {
-    guard !signup else {
+    guard let profile, !signup else {
       return UserRoute.router.path(for: .signup(.index))
         .appendingPath("profile")
     }
-    return UserRoute.router.path(for: .profile(.index(userID)))
+    return "/profile/\(profile.id)"
   }
 
   public var body: some HTML<HTMLTag.div> {

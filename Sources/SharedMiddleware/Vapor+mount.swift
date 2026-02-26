@@ -59,7 +59,8 @@ extension Application {
     R: Sendable,
     R.Output: Sendable,
     R.Input == URLRequestData,
-    V: Sendable
+    V: Sendable,
+    V.View: Sendable
   {
     mount(
       router,
@@ -81,6 +82,7 @@ extension Application {
   )
   where
     C: Sendable,
+    C.View: Sendable,
     C.Route: Routeable,
     C.Route.Router: Sendable,
     C.Route.Router.Output: Sendable
@@ -147,6 +149,17 @@ where
     } else {
       return try await respond(request, route).encodeResponse(for: request)
     }
+  }
+}
+
+extension ViewController where View: Sendable {
+  fileprivate func siteHandler(
+    _ request: Request,
+    _ route: Route
+  ) async throws
+    -> any AsyncResponseEncodable
+  {
+    try await respond(to: route, on: request)
   }
 }
 
