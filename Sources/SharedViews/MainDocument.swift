@@ -66,13 +66,13 @@ public struct DefaultHead<Head: HTML>: HTML {
 
   public var body: some HTML {
     script(.src("https://unpkg.com/htmx.org@2.0.8")) {}
-    script(.src("https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4")) {}
     script(
       .src("https://unpkg.com/htmx-remove@latest"),
       .crossorigin(.anonymous),
       .integrity("sha384-NwB2Xh66PNEYfVki0ao13UAFmdNtMIdBKZ8sNGRT6hKfCPaINuZ4ScxS6vVAycPT")
     ) {}
     link(.href("/css/output.css"), .rel("stylesheet"))
+    script(.src("https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4")) {}
     style {
       """
       .htmx-added {

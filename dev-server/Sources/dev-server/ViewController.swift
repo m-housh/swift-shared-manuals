@@ -57,6 +57,9 @@ struct SiteViewController: ViewController {
 
     case .shared(let route):
       switch route {
+      case .auth(let route):
+        await route.view()
+
       case .privacyPolicy:
         PrivacyPolicyView()
       case .project(let route):
@@ -64,39 +67,16 @@ struct SiteViewController: ViewController {
       case .user(let route):
         switch route {
 
-        case .login(.index(next: let next)):
-          await ResultView {
-            Modal(open: true, displayCloseButton: false) {
-              LoginForm(next: next)
-            }
-          }
-        case .login(.submit(let form)):
-          await ResultView {
-            let user = try await auth.login(form)
-            let theme = try await database.userProfiles.theme(user.id)
-            return (form.next, theme)
-          } onSuccess: { (next, theme) in
-            MainContent(theme: theme) {
-              LoggedIn(next: next)
-            }
-          }
-
-        case .logout:
-          await ResultView {
-            try auth.logout()
-          } onSuccess: {
-            HomePage(user: nil)
-          }
-
         case .profile(let userID, let route):
           switch route {
           case .index:
             await ResultView {
-              try await database.userProfiles.fetch(userID)
-            } onSuccess: { profile in
-              Modal(open: true, displayCloseButton: false) {
-                UserProfileForm(userID: userID, profile: profile)
+              guard let profile = try await database.userProfiles.fetch(userID) else {
+                throw NotFoundError()
               }
+              return profile
+            } onSuccess: { profile in
+              UserProfileView(profile: profile)
             }
           case .update(let id, let form):
 
@@ -139,6 +119,41 @@ struct SiteViewController: ViewController {
           }
 
         }
+      }
+    }
+  }
+}
+
+extension SharedRoute.Auth {
+  @HTMLBuilder
+  func view() async -> (some HTML & Sendable) {
+    @Dependency(\.auth) var auth
+    @Dependency(\.sharedDatabase) var database
+
+    switch self {
+
+    case .login(.index(next: let next)):
+      await ResultView {
+        Modal(open: true, displayCloseButton: false) {
+          LoginForm(next: next)
+        }
+      }
+    case .login(.submit(let form)):
+      await ResultView {
+        let user = try await auth.login(form)
+        let theme = try await database.userProfiles.theme(user.id)
+        return (form.next, theme)
+      } onSuccess: { (next, theme) in
+        MainContent(theme: theme) {
+          LoggedIn(next: next)
+        }
+      }
+
+    case .logout:
+      await ResultView {
+        try auth.logout()
+      } onSuccess: {
+        HomePage(user: nil)
       }
     }
   }
@@ -237,8 +252,8 @@ struct HomePage: HTML, Sendable {
           div(.class("flex space-x-4 justify-center")) {
             button(
               .class("btn btn-primary"),
-              .hx.get(route: SiteRoute.user(.logout)),
-              .hx.target("#content"),
+              .hx.get(route: SiteRoute.shared(.auth(.logout))),
+              .hx.target(id: "content"),
               .hx.swap(.innerHTML),
             ) {
               "Logout"
@@ -247,7 +262,8 @@ struct HomePage: HTML, Sendable {
               .class("btn btn-secondary"),
               .hx.get(route: SiteRoute.user(.profile(user.id, .index))),
               .hx.target(id: "content"),
-              .hx.swap(.innerHTML)
+              .hx.swap(.innerHTML),
+              .hx.pushURL(true)
             ) {
               "Profile"
             }
@@ -255,7 +271,8 @@ struct HomePage: HTML, Sendable {
               .class("btn btn-accent"),
               .hx.get(route: SiteRoute.project(.index)),
               .hx.target(id: "content"),
-              .hx.swap(.innerHTML)
+              .hx.swap(.innerHTML),
+              .hx.pushURL(true)
             ) {
               "Projects"
             }

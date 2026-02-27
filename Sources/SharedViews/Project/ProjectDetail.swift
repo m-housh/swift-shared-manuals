@@ -21,7 +21,6 @@ public struct ProjectDetail: HTML, Sendable {
           svg: .squarePen
         )
         .tooltip("Edit project", position: .left)
-
       }
 
       table(.class("table table-zebra text-lg")) {

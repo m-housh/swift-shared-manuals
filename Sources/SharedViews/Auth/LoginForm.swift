@@ -24,18 +24,18 @@ public struct LoginForm: HTML, Sendable, Identifiable {
     self.init(style: .login, next: R.router.path(for: route))
   }
 
-  private var route: User.ViewRoute {
+  private var route: SharedRoute {
     if style == .login {
-      return .login(.index(next: next))
+      return .auth(.login(.index(next: next)))
     }
-    return .signup(.index)
+    return .user(.signup(.index))
   }
 
-  private var signupRoute: User.ViewRoute {
+  private var signupRoute: SharedRoute {
     if style == .signup {
-      return .login(.index(next: next))
+      return .auth(.login(.index(next: next)))
     }
-    return .signup(.index)
+    return .user(.signup(.index))
   }
 
   public var body: some HTML<HTMLTag.div> {
