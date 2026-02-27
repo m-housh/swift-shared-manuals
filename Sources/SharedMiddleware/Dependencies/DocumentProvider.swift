@@ -7,18 +7,18 @@ import SharedModels
 import SharedViews
 
 extension DependencyValues {
-  public var mainPage: MainPage {
-    get { self[MainPage.self] }
-    set { self[MainPage.self] = newValue }
+  public var document: DocumentProvider {
+    get { self[DocumentProvider.self] }
+    set { self[DocumentProvider.self] = newValue }
   }
 }
 
 @DependencyClient
-public struct MainPage: Sendable {
+public struct DocumentProvider: Sendable {
   public var embed: @Sendable (AnySendableHTML) async throws -> AnySendableHTMLDocument
 }
 
-extension MainPage: TestDependencyKey {
+extension DocumentProvider: TestDependencyKey {
   public static let testValue = Self()
 
   public static func live<Head: HTML>(
