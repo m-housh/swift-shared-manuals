@@ -61,6 +61,7 @@ let package = Package(
       dependencies: [
         .product(name: "Dependencies", package: "swift-dependencies"),
         .product(name: "DependenciesMacros", package: "swift-dependencies"),
+        .product(name: "Fluent", package: "fluent"),
         .product(name: "Logging", package: "swift-log"),
         .product(name: "URLRouting", package: "swift-url-routing"),
         .product(name: "Vapor", package: "vapor"),

@@ -1,12 +1,12 @@
 import Elementary
 import SharedModels
 
-public struct MainDocument<Inner: HTML, Head: HTML>: HTMLDocument {
+public struct MainDocument<Content: HTML, Head: HTML>: HTMLDocument {
 
   public let title: String
   public let lang: String
 
-  let inner: Inner
+  let inner: Content
   let theme: Theme?
   let _head: Head
 
@@ -15,7 +15,7 @@ public struct MainDocument<Inner: HTML, Head: HTML>: HTMLDocument {
     language: String = "en",
     theme: Theme? = nil,
     @HTMLBuilder head: () -> Head,
-    @HTMLBuilder body: () -> Inner
+    @HTMLBuilder body: () -> Content
   ) {
     self.title = title
     self.lang = language
@@ -37,7 +37,7 @@ public struct MainDocument<Inner: HTML, Head: HTML>: HTMLDocument {
   }
 }
 
-extension MainDocument: Sendable where Head: Sendable, Inner: Sendable {}
+extension MainDocument: Sendable where Head: Sendable, Content: Sendable {}
 
 extension MainDocument where Head == EmptyHTML {
 
@@ -45,7 +45,7 @@ extension MainDocument where Head == EmptyHTML {
     title: String,
     language: String = "en",
     theme: Theme? = nil,
-    @HTMLBuilder body: () -> Inner
+    @HTMLBuilder body: () -> Content
   ) {
     self.init(
       title: title,
@@ -67,21 +67,12 @@ public struct DefaultHead<Head: HTML>: HTML {
   public var body: some HTML {
     script(.src("https://unpkg.com/htmx.org@2.0.8")) {}
     script(.src("https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4")) {}
-    link(
-      .href("https://cdn.jsdelivr.net/npm/daisyui@5"),
-      .rel(.stylesheet),
-      .init(name: "type", value: "text/css")
-    )
-    link(
-      .href("https://cdn.jsdelivr.net/npm/daisyui@5/themes.css"),
-      .rel(.stylesheet),
-      .init(name: "type", value: "text/css")
-    )
     script(
       .src("https://unpkg.com/htmx-remove@latest"),
       .crossorigin(.anonymous),
       .integrity("sha384-NwB2Xh66PNEYfVki0ao13UAFmdNtMIdBKZ8sNGRT6hKfCPaINuZ4ScxS6vVAycPT")
     ) {}
+    link(.href("/css/output.css"), .rel("stylesheet"))
     style {
       """
       .htmx-added {

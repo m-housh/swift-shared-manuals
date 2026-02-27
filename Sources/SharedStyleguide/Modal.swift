@@ -41,7 +41,7 @@ public struct Modal<Inner: HTML>: HTML {
         if displayCloseButton {
           button(
             .class("btn btn-sm btn-circle btn-ghost absolute right-2 top-2"),
-            .on(.click, "\(id).close")
+            .on(.click, "\(id).close();")
           ) {
             SVG(.close)
           }

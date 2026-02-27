@@ -41,6 +41,7 @@ extension MainPage: TestDependencyKey {
         theme = try await database.userProfiles.theme(currentUser.id)
       }
       logger.debug("Theme: \(String(describing: theme))")
+      logger.debug("End embed...")
 
       return MainDocument(title: "Dev Server", theme: theme) {
         DefaultHead { head() }

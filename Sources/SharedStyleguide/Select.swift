@@ -108,4 +108,3 @@ extension Select where Label == HTMLText, Element: Sendable {
   }
 }
 
-extension KeyPath: @retroactive @unchecked Sendable where Root: Sendable, Value: Sendable {}

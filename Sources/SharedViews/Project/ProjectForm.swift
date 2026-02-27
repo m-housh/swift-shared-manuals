@@ -17,11 +17,9 @@ public struct ProjectForm: HTML, Sendable, Identifiable {
     self.project = project
   }
 
-  // FIX: Update route.
   var route: String {
-    ""
-    // SiteRoute.View.router.path(for: .project(.index))
-    //   .appendingPath(project?.id)
+    SharedRoute.router.path(for: .project(.index))
+      .appendingPath(project?.id)
   }
 
   public var body: some HTML<HTMLTag.form> {
@@ -30,8 +28,8 @@ public struct ProjectForm: HTML, Sendable, Identifiable {
       project == nil
         ? .hx.post(route)
         : .hx.patch(route),
-      .hx.target("body"),
-      .hx.swap(.outerHTML)
+      .hx.target(id: "content"),
+      .hx.swap(.innerHTML)
     ) {
       h1(.class("text-3xl font-bold pb-6 ps-2")) { "Project" }
 

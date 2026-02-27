@@ -1,0 +1,5 @@
+run:
+	@swift run dev-server serve --port 8088
+
+watch-css:
+	@npm run watch-css

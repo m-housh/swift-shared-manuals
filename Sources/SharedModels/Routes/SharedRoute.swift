@@ -1,4 +1,5 @@
 import CasePathsCore
+import Fluent
 import Foundation
 @preconcurrency import URLRouting
 

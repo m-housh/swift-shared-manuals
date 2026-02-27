@@ -43,6 +43,8 @@ private func addMiddleware(
   )
   let cors = CORSMiddleware(configuration: corsConfiguration)
   app.middleware.use(cors, at: .beginning)
+  // File middleware.
+  app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
   // Sessions.
   app.sessions.use(.fluent)
   app.migrations.add(SessionRecord.migration)
@@ -65,9 +67,14 @@ func addRoutes(
     controller: SiteViewController(),
     routeMiddleware: { route in
       switch route {
-      case .user(.login), .user(.signup):
+      case .shared(.user(.login)),
+        .shared(.user(.signup)),
+        .shared(.privacyPolicy):
         return nil
-      case .home, .user(.profile), .user(.logout), .project:
+      case .home,
+        .shared(.user(.profile)),
+        .shared(.user(.logout)),
+        .shared(.project):
         return [
           User.passwordAuth(),
           User.sessionAuth(),

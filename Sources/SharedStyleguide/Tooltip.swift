@@ -18,18 +18,18 @@ extension HTML {
 /// Adds a tooltip to an item.
 ///
 /// NOTE: This depends on `DaisyUI` as css.
-public struct Tooltip<Inner: HTML>: HTML {
+public struct Tooltip<Content: HTML>: HTML {
 
-  private let inner: Inner
+  private let _body: Content
   private let position: AnchorPosition
   private let tooltip: String
 
   public init(
     _ tooltip: String,
     position: AnchorPosition = .default,
-    @HTMLBuilder body: () -> Inner
+    @HTMLBuilder body: () -> Content
   ) {
-    self.inner = body()
+    self._body = body()
     self.position = position
     self.tooltip = tooltip
   }
@@ -39,9 +39,9 @@ public struct Tooltip<Inner: HTML>: HTML {
       .class("tooltip tooltip-\(position.rawValue)"),
       .data("tip", value: tooltip)
     ) {
-      inner
+      _body
     }
   }
 }
 
-extension Tooltip: Sendable where Inner: Sendable {}
+extension Tooltip: Sendable where Content: Sendable {}

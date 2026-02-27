@@ -9,7 +9,7 @@ clean:
 	rm -rf .build
 
 run-dev:
-	@swift run --package-path dev-server dev-server serve --port 8088 --log debug
+	@just -f dev-server/justfile run
 
 build-docker file="docker/Dockerfile":
 	@docker build -f {{file}} -t {{docker_image}}:{{docker_tag}} .

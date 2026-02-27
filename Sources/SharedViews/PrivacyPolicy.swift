@@ -1,8 +1,9 @@
 import Elementary
 
-struct PrivacyPolicyView: HTML, Sendable {
+public struct PrivacyPolicyView: HTML, Sendable {
+  public init() {}
 
-  var body: some HTML<HTMLTag.div> {
+  public var body: some HTML<HTMLTag.div> {
     div(.class("p-10 space-y-4")) {
       h1(.class("text-3xl font-bold")) { "Privacy Policy" }
       p {
