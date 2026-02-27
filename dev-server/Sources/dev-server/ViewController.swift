@@ -11,7 +11,7 @@ import SharedViews
 enum SiteRoute: Routeable {
   case home
   case project
-  case user(UserRoute)
+  case user(User.ViewRoute)
 
   static let router = OneOf {
     Route(.case(Self.home)) {
@@ -22,7 +22,7 @@ enum SiteRoute: Routeable {
       Method.get
     }
     Route(.case(Self.user)) {
-      UserRoute.router
+      User.ViewRoute.router
     }
   }
 }

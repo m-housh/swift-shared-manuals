@@ -15,7 +15,7 @@ struct SharedRouteTests {
       body: .init("email=test@example.com&password=super-secret&next=/".utf8)
     )
 
-    let route = try UserRoute.router.match(request: .init(data: request)!)
+    let route = try User.ViewRoute.router.match(request: .init(data: request)!)
     let expected = User.Login(
       email: "test@example.com",
       password: "super-secret",
@@ -27,36 +27,36 @@ struct SharedRouteTests {
   @Test
   func loginIndex() throws {
     let request = URLRequestData(method: "GET", path: "/login")
-    let route = try UserRoute.router.match(request: .init(data: request)!)
+    let route = try User.ViewRoute.router.match(request: .init(data: request)!)
     #expect(route == .login(.index()))
 
-    let route2 = try UserRoute.router.match(url: URL(string: "/login?next=foo")!)
+    let route2 = try User.ViewRoute.router.match(url: URL(string: "/login?next=foo")!)
     #expect(route2 == .login(.index(next: "foo")))
   }
 
   @Test
   func logout() throws {
-    let route = try UserRoute.router.match(url: URL(string: "/logout")!)
+    let route = try User.ViewRoute.router.match(url: URL(string: "/logout")!)
     #expect(route == .logout)
   }
 
   @Test
   func profileIndex() throws {
-    let request = URLRequestData(method: "GET", path: "/profile/\(UUID(0))")
-    let route = try UserRoute.router.match(request: .init(data: request)!)
-    #expect(route == .profile(.index(UUID(0))))
+    let request = URLRequestData(method: "GET", path: "/user/\(UUID(0))/profile")
+    let route = try User.ViewRoute.router.match(request: .init(data: request)!)
+    #expect(route == .profile(UUID(0), .index))
   }
 
   @Test
   func profileSubmit() throws {
     let request = URLRequestData(
       method: "POST",
-      path: "/profile",
+      path: "/signup/profile",
       body: .init(
         "userID=\(UUID(0))&firstName=Testy&lastName=McTestface&companyName=Acme%20Co.&streetAddress=1234%20Sesame%20St.&city=Nowhere&state=OH&zipCode=45050&theme=dark"
           .utf8)
     )
-    let route = try UserRoute.router.match(request: .init(data: request)!)
+    let route = try User.ViewRoute.router.match(request: .init(data: request)!)
     let expected = User.Profile.Create(
       userID: UUID(0),
       firstName: "Testy",
@@ -68,19 +68,19 @@ struct SharedRouteTests {
       zipCode: "45050",
       theme: .dark
     )
-    #expect(route == .profile(.submit(expected)))
+    #expect(route == .signup(.submitProfile(expected)))
   }
 
   @Test
   func profileUpdate() throws {
     let request = URLRequestData(
       method: "PATCH",
-      path: "/profile/\(UUID(0))",
+      path: "/user/\(UUID(0))/profile/\(UUID(1))",
       body: .init(
         "firstName=Testy&lastName=McTestface&companyName=Acme%20Co.&streetAddress=1234%20Sesame%20St.&city=Nowhere&state=OH&zipCode=45050&theme=dark"
           .utf8)
     )
-    let route = try UserRoute.router.match(request: .init(data: request)!)
+    let route = try User.ViewRoute.router.match(request: .init(data: request)!)
     let expected = User.Profile.Update(
       firstName: "Testy",
       lastName: "McTestface",
@@ -91,12 +91,12 @@ struct SharedRouteTests {
       zipCode: "45050",
       theme: .dark
     )
-    #expect(route == .profile(.update(UUID(0), expected)))
+    #expect(route == .profile(UUID(0), .update(UUID(1), expected)))
   }
 
   @Test
   func signupIndex() throws {
-    let route = try UserRoute.router.match(path: "/signup")
+    let route = try User.ViewRoute.router.match(path: "/signup")
     #expect(route == .signup(.index))
   }
 
@@ -107,7 +107,7 @@ struct SharedRouteTests {
       path: "/signup",
       body: .init("email=test@example.com&password=super-secret&confirmPassword=super-secret".utf8)
     )
-    let route = try UserRoute.router.match(request: .init(data: request)!)
+    let route = try User.ViewRoute.router.match(request: .init(data: request)!)
     let expected = User.Create(
       email: "test@example.com",
       password: "super-secret",

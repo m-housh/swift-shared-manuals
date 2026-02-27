@@ -30,10 +30,10 @@ public struct UserProfileForm: HTML, Sendable, Identifiable {
 
   var route: String {
     guard let profile, !signup else {
-      return UserRoute.router.path(for: .signup(.index))
+      return User.ViewRoute.router.path(for: .signup(.index))
         .appendingPath("profile")
     }
-    return UserRoute.router.path(for: .profile(userID, .index))
+    return User.ViewRoute.router.path(for: .profile(userID, .index))
       .appendingPath(profile.id.uuidString)
     // return "/profile/\(profile.id)"
   }

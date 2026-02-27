@@ -4,15 +4,19 @@ import Foundation
 
 public enum SharedRoute: Sendable, Routeable {
   case privacyPolicy
-  case user(UserRoute)
+  case project(Project.ViewRoute)
+  case user(User.ViewRoute)
 
   public static let router = OneOf {
     Route(.case(Self.privacyPolicy)) {
       Path { "privacy-policy" }
       Method.get
     }
+    Route(.case(Self.project)) {
+      Project.ViewRoute.router
+    }
     Route(.case(Self.user)) {
-      UserRoute.router
+      User.ViewRoute.router
     }
   }
 }

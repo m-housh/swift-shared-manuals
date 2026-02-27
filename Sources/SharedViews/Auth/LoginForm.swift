@@ -24,14 +24,14 @@ public struct LoginForm: HTML, Sendable, Identifiable {
     self.init(style: .login, next: R.router.path(for: route))
   }
 
-  private var route: UserRoute {
+  private var route: User.ViewRoute {
     if style == .login {
       return .login(.index(next: next))
     }
     return .signup(.index)
   }
 
-  private var signupRoute: UserRoute {
+  private var signupRoute: User.ViewRoute {
     if style == .signup {
       return .login(.index(next: next))
     }
