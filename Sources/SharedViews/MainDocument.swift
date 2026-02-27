@@ -58,9 +58,18 @@ extension MainDocument where Head == EmptyHTML {
 }
 
 public struct DefaultHead<Head: HTML>: HTML {
-  private let extraHead: Head
 
-  public init(@HTMLBuilder head: () -> Head) {
+  private let extraHead: Head
+  private let useDaisyUI: Bool
+  private let useTailwind: Bool
+
+  public init(
+    withDaisyUI useDaisyUI: Bool = true,
+    withTailwind useTailwind: Bool = true,
+    @HTMLBuilder head: () -> Head
+  ) {
+    self.useDaisyUI = useDaisyUI
+    self.useTailwind = useTailwind
     self.extraHead = head()
   }
 
@@ -71,8 +80,7 @@ public struct DefaultHead<Head: HTML>: HTML {
       .crossorigin(.anonymous),
       .integrity("sha384-NwB2Xh66PNEYfVki0ao13UAFmdNtMIdBKZ8sNGRT6hKfCPaINuZ4ScxS6vVAycPT")
     ) {}
-    link(.href("/css/output.css"), .rel("stylesheet"))
-    script(.src("https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4")) {}
+
     style {
       """
       .htmx-added {
@@ -83,6 +91,17 @@ public struct DefaultHead<Head: HTML>: HTML {
         transition: opacity 1s ease-out;
       }
       """
+    }
+    if useDaisyUI {
+      link(
+        .href("https://cdn.jsdelivr.net/npm/daisyui@5"), .rel(.stylesheet),
+        .init(name: "type", value: "text/css"))
+      link(
+        .href("https://cdn.jsdelivr.net/npm/daisyui@5/themes.css"), .rel(.stylesheet),
+        .init(name: "type", value: "text/css"))
+    }
+    if useTailwind {
+      script(.src("https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4")) {}
     }
     extraHead
   }
