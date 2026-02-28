@@ -1,7 +1,7 @@
 import Elementary
 import SharedModels
 
-public struct MainContent<Inner: HTML>: HTML {
+public struct PageContent<Inner: HTML>: HTML {
   static var id: String { "content" }
 
   private let theme: Theme
@@ -25,4 +25,4 @@ public struct MainContent<Inner: HTML>: HTML {
   }
 }
 
-extension MainContent: Sendable where Inner: Sendable {}
+extension PageContent: Sendable where Inner: Sendable {}
