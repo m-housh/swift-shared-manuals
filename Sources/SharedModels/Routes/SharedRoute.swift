@@ -4,6 +4,9 @@ import Foundation
 import Tagged
 @preconcurrency import URLRouting
 
+// TODO: Make the router a dependency, can use the current router
+//       as the default live router.
+
 public enum SharedRoute: Sendable, Equatable, Routeable {
   case auth(Auth)
   case privacyPolicy

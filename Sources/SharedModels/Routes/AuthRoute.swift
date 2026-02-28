@@ -3,6 +3,7 @@ import Foundation
 @preconcurrency import URLRouting
 
 extension SharedRoute {
+  // TODO: Add reset password route.
   public enum Auth: Equatable, Sendable, Routeable {
     case login(Login)
     case logout
