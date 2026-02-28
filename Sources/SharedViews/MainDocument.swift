@@ -31,7 +31,7 @@ public struct MainDocument<Content: HTML, Head: HTML>: HTMLDocument {
   }
 
   public var body: some HTML {
-    MainContent(theme: theme) {
+    PageContent(theme: theme) {
       inner
     }
   }

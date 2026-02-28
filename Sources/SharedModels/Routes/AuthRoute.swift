@@ -3,7 +3,7 @@ import Foundation
 @preconcurrency import URLRouting
 
 extension SharedRoute {
-  public enum Auth: Sendable, Routeable {
+  public enum Auth: Equatable, Sendable, Routeable {
     case login(Login)
     case logout
 

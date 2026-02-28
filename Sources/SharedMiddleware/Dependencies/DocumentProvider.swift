@@ -16,6 +16,10 @@ extension DependencyValues {
 @DependencyClient
 public struct DocumentProvider: Sendable {
   public var embed: @Sendable (AnySendableHTML) async throws -> AnySendableHTMLDocument
+
+  public func callAsFunction(_ html: AnySendableHTML) async throws -> AnySendableHTMLDocument {
+    try await embed(html)
+  }
 }
 
 extension DocumentProvider: TestDependencyKey {

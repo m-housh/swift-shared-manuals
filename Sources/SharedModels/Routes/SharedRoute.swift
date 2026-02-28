@@ -3,7 +3,7 @@ import Fluent
 import Foundation
 @preconcurrency import URLRouting
 
-public enum SharedRoute: Sendable, Routeable {
+public enum SharedRoute: Sendable, Equatable, Routeable {
   case auth(Auth)
   case privacyPolicy
   case project(Project.ViewRoute)

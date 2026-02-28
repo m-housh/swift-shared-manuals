@@ -5,7 +5,7 @@ import Foundation
 
 extension Project {
 
-  public enum ViewRoute: Sendable, Routeable {
+  public enum ViewRoute: Equatable, Sendable, Routeable {
     case delete(Project.ID)
     case detail(Project.ID)
     case index
@@ -92,5 +92,11 @@ extension Project {
         }
       }
     }
+  }
+}
+
+extension PageRequest: @retroactive Equatable {
+  public static func == (lhs: FluentKit.PageRequest, rhs: FluentKit.PageRequest) -> Bool {
+    lhs.page == rhs.page && lhs.per == rhs.per
   }
 }

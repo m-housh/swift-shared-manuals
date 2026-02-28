@@ -50,7 +50,7 @@ struct SiteViewController: ViewController {
         }
         return (currentUser, theme)
       } onSuccess: { user, theme in
-        MainContent(theme: theme) {
+        PageContent(theme: theme) {
           HomePage(user: user)
         }
       }
@@ -90,7 +90,7 @@ struct SiteViewController: ViewController {
                 profile.theme
               )
             } onSuccess: { user, theme in
-              MainContent(theme: theme) {
+              PageContent(theme: theme) {
                 HomePage(user: user)
               }
             }
@@ -115,7 +115,7 @@ struct SiteViewController: ViewController {
             let profile = try await database.userProfiles.create(profile)
             return profile.theme
           } onSuccess: { theme in
-            MainContent(theme: theme) {
+            PageContent(theme: theme) {
               LoggedIn(next: nil)
             }
           }
@@ -146,7 +146,7 @@ extension SharedRoute.Auth {
         let theme = try await database.userProfiles.theme(user.id)
         return (form.next, theme)
       } onSuccess: { (next, theme) in
-        MainContent(theme: theme) {
+        PageContent(theme: theme) {
           LoggedIn(next: next)
         }
       }
