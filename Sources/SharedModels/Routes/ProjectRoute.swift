@@ -1,9 +1,15 @@
 import CasePathsCore
 import Fluent
 import Foundation
+import Tagged
 @preconcurrency import URLRouting
 
 extension Project {
+
+  static let idParser = From(.utf8) {
+    UUID.parser()
+      .map(.representing(Project.ID.self))
+  }
 
   public enum ViewRoute: Equatable, Sendable, Routeable {
     case delete(Project.ID)
@@ -23,14 +29,14 @@ extension Project {
       Route(.case(Self.delete)) {
         Path {
           path
-          Project.ID.parser()
+          Project.idParser
         }
         Method.delete
       }
       Route(.case(Self.detail)) {
         Path {
           path
-          Project.ID.parser()
+          Project.idParser
         }
         Method.get
       }
@@ -67,7 +73,7 @@ extension Project {
       Route(.case(Self.update)) {
         Path {
           path
-          Project.ID.parser()
+          Project.idParser
         }
         Method.patch
         Body {

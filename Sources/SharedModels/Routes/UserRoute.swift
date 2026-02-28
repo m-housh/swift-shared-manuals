@@ -1,8 +1,14 @@
 import CasePaths
 import Foundation
+import Tagged
 @preconcurrency import URLRouting
 
 extension User {
+
+  static let idParser = From(.utf8) {
+    UUID.parser().map(.representing(User.ID.self))
+  }
+
   // TODO: Add update password route.
   // TODO: Signup route should have a 'next' property too.
   public enum ViewRoute: Equatable, Sendable, Routeable {
@@ -13,7 +19,7 @@ extension User {
       Route(.case(Self.profile)) {
         Path {
           "user"
-          User.ID.parser()
+          User.idParser
         }
         Profile.router
       }
@@ -36,7 +42,7 @@ extension User {
         Route(.case(Self.update)) {
           Path {
             path
-            User.Profile.ID.parser()
+            User.Profile.idParser
           }
           Method.patch
           Body {
@@ -104,7 +110,7 @@ extension User {
           Method.post
           Body {
             FormData {
-              Field("userID") { User.ID.parser() }
+              Field("userID") { User.idParser }
               Field("firstName", .string)
               Field("lastName", .string)
               Field("companyName", .string)
@@ -121,5 +127,11 @@ extension User {
         }
       }
     }
+  }
+}
+
+extension User.Profile {
+  static let idParser = From(.utf8) {
+    UUID.parser().map(.representing(Self.ID.self))
   }
 }

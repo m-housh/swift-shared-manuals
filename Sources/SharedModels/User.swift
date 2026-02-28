@@ -1,12 +1,13 @@
 import Dependencies
 import Foundation
+import Tagged
 
 /// Represents a user of the site.
 ///
 public struct User: Codable, Equatable, Identifiable, Sendable {
 
   /// The unique id of the user.
-  public let id: UUID
+  public let id: Tagged<Self, UUID>
   /// The user's email address.
   public let email: String
   /// When the user was created in the database.
@@ -15,7 +16,7 @@ public struct User: Codable, Equatable, Identifiable, Sendable {
   public let updatedAt: Date
 
   public init(
-    id: UUID,
+    id: Tagged<Self, UUID>,
     email: String,
     createdAt: Date,
     updatedAt: Date

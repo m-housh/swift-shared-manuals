@@ -1,6 +1,7 @@
 import CasePathsCore
 import Fluent
 import Foundation
+import Tagged
 @preconcurrency import URLRouting
 
 public enum SharedRoute: Sendable, Equatable, Routeable {

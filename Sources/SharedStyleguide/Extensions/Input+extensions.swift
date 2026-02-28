@@ -1,5 +1,6 @@
 import Elementary
 import Foundation
+import Tagged
 
 extension HTMLAttribute where Tag == HTMLTag.input {
 
@@ -21,6 +22,10 @@ extension HTMLAttribute where Tag == HTMLTag.input {
   /// Set the value of an input to the given uuid, if it exists.
   public static func value(_ uuid: UUID?) -> Self {
     value(uuid.map { $0.uuidString })
+  }
+
+  public static func value<T>(_ uuid: Tagged<T, UUID>?) -> Self {
+    value(uuid?.rawValue)
   }
 
   public static func max(_ value: String) -> Self {

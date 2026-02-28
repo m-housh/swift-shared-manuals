@@ -28,7 +28,7 @@ extension SharedDatabase.Projects: TestDependencyKey {
         try await ProjectModel.query(on: database)
           .sort(\.$createdAt, .descending)
           .with(\.$user)
-          .filter(\.$user.$id == userID)
+          .filter(\.$user.$id == userID.rawValue)
           .paginate(request)
           .map { try $0.toDTO() }
       },
@@ -137,14 +137,14 @@ final class ProjectModel: Model, @unchecked Sendable {
     self.city = city
     self.state = state
     self.zipCode = zipCode
-    $user.id = userID
+    $user.id = userID.rawValue
     self.createdAt = createdAt
     self.updatedAt = updatedAt
   }
 
   func toDTO() throws -> Project {
     try .init(
-      id: requireID(),
+      id: .init(rawValue: requireID()),
       name: name,
       streetAddress: streetAddress,
       city: city,

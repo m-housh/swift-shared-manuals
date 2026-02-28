@@ -50,7 +50,7 @@ struct UserTests {
     try await withTestDatabase {
       @Dependency(\.sharedDatabase.users) var users
       await #expect(throws: NotFoundError.self) {
-        try await users.delete(UUID(0))
+        try await users.delete(.init(UUID(0)))
       }
     }
   }
@@ -130,10 +130,10 @@ struct UserTests {
     try await withTestDatabase {
       @Dependency(\.sharedDatabase.userProfiles) var profiles
       await #expect(throws: NotFoundError.self) {
-        try await profiles.delete(UUID(0))
+        try await profiles.delete(.init(UUID(0)))
       }
       await #expect(throws: NotFoundError.self) {
-        try await profiles.update(UUID(0), .init(firstName: "Foo"))
+        try await profiles.update(.init(UUID(0)), .init(firstName: "Foo"))
       }
     }
   }
@@ -141,31 +141,32 @@ struct UserTests {
   @Test(
     arguments: [
       UserProfileModel(
-        userID: UUID(0), firstName: "", lastName: "McTestface", companyName: "Acme Co.",
+        userID: .init(UUID(0)), firstName: "", lastName: "McTestface",
+        companyName: "Acme Co.",
         streetAddress: "1234 Sesame St", city: "Nowhere", state: "CA", zipCode: "55555"
       ),
       UserProfileModel(
-        userID: UUID(0), firstName: "Testy", lastName: "", companyName: "Acme Co.",
+        userID: .init(UUID(0)), firstName: "Testy", lastName: "", companyName: "Acme Co.",
         streetAddress: "1234 Sesame St", city: "Nowhere", state: "CA", zipCode: "55555"
       ),
       UserProfileModel(
-        userID: UUID(0), firstName: "Testy", lastName: "McTestface", companyName: "",
+        userID: .init(UUID(0)), firstName: "Testy", lastName: "McTestface", companyName: "",
         streetAddress: "1234 Sesame St", city: "Nowhere", state: "CA", zipCode: "55555"
       ),
       UserProfileModel(
-        userID: UUID(0), firstName: "Testy", lastName: "McTestface", companyName: "Acme Co.",
+        userID: .init(UUID(0)), firstName: "Testy", lastName: "McTestface", companyName: "Acme Co.",
         streetAddress: "", city: "Nowhere", state: "CA", zipCode: "55555"
       ),
       UserProfileModel(
-        userID: UUID(0), firstName: "Testy", lastName: "McTestface", companyName: "Acme Co.",
+        userID: .init(UUID(0)), firstName: "Testy", lastName: "McTestface", companyName: "Acme Co.",
         streetAddress: "1234 Sesame St", city: "", state: "CA", zipCode: "55555"
       ),
       UserProfileModel(
-        userID: UUID(0), firstName: "Testy", lastName: "McTestface", companyName: "Acme Co.",
+        userID: .init(UUID(0)), firstName: "Testy", lastName: "McTestface", companyName: "Acme Co.",
         streetAddress: "1234 Sesame St", city: "Nowhere", state: "", zipCode: "55555"
       ),
       UserProfileModel(
-        userID: UUID(0), firstName: "Testy", lastName: "McTestface", companyName: "Acme Co.",
+        userID: .init(UUID(0)), firstName: "Testy", lastName: "McTestface", companyName: "Acme Co.",
         streetAddress: "1234 Sesame St", city: "Nowhere", state: "CA", zipCode: ""
       ),
     ]

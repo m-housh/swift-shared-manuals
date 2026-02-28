@@ -65,11 +65,11 @@ struct ProjectTests {
       @Dependency(\.sharedDatabase.projects) var projects
 
       await #expect(throws: NotFoundError.self) {
-        try await projects.delete(UUID(0))
+        try await projects.delete(.init(UUID(0)))
       }
 
       await #expect(throws: NotFoundError.self) {
-        try await projects.update(UUID(0), .init(name: "Foo"))
+        try await projects.update(.init(UUID(0)), .init(name: "Foo"))
       }
 
     }
@@ -79,25 +79,25 @@ struct ProjectTests {
     arguments: [
       ProjectModel(
         name: "", streetAddress: "1234 Sesame St", city: "Nowhere", state: "OH", zipCode: "55555",
-        userID: UUID(0)
+        userID: .init(UUID(0))
       ),
       ProjectModel(
         name: "Testy", streetAddress: "", city: "Nowhere", state: "OH", zipCode: "55555",
-        userID: UUID(0)
+        userID: .init(UUID(0))
       ),
       ProjectModel(
         name: "Testy", streetAddress: "1234 Sesame St", city: "", state: "OH", zipCode: "55555",
-        userID: UUID(0)
+        userID: .init(UUID(0))
       ),
       ProjectModel(
         name: "Testy", streetAddress: "1234 Sesame St", city: "Nowhere", state: "",
         zipCode: "55555",
-        userID: UUID(0)
+        userID: .init(UUID(0))
       ),
       ProjectModel(
         name: "Testy", streetAddress: "1234 Sesame St", city: "Nowhere", state: "OH",
         zipCode: "",
-        userID: UUID(0)
+        userID: .init(UUID(0))
       ),
     ]
   )

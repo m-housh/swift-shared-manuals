@@ -1,12 +1,13 @@
 import Dependencies
 import Foundation
+import Tagged
 
 extension User {
   /// Represents a user's profile. Which contains extra information about a user of the site.
   public struct Profile: Codable, Equatable, Identifiable, Sendable {
 
     /// The unique id of the profile
-    public let id: UUID
+    public let id: Tagged<Self, UUID>
     /// The user id the profile is for.
     public let userID: User.ID
     /// The user's first name.
@@ -31,7 +32,7 @@ extension User {
     public let updatedAt: Date
 
     public init(
-      id: UUID,
+      id: Tagged<Self, UUID>,
       userID: User.ID,
       firstName: String,
       lastName: String,

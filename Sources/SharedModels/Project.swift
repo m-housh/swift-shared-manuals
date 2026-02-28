@@ -1,5 +1,6 @@
 import Dependencies
 import Foundation
+import Tagged
 
 /// Represents a single duct design project / system.
 ///
@@ -7,7 +8,7 @@ import Foundation
 public struct Project: Codable, Equatable, Identifiable, Sendable {
 
   /// The unique ID of the project.
-  public let id: UUID
+  public let id: Tagged<Self, UUID>
 
   /// The name of the project.
   public let name: String
@@ -31,7 +32,7 @@ public struct Project: Codable, Equatable, Identifiable, Sendable {
   public let updatedAt: Date
 
   public init(
-    id: UUID,
+    id: Tagged<Self, UUID>,
     name: String,
     streetAddress: String,
     city: String,

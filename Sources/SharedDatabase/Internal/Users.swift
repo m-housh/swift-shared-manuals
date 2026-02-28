@@ -161,7 +161,7 @@ final class UserModel: Model, @unchecked Sendable {
 
   func toDTO() throws -> User {
     try .init(
-      id: requireID(),
+      id: .init(rawValue: requireID()),
       email: email,
       createdAt: createdAt!,
       updatedAt: updatedAt!
@@ -202,7 +202,7 @@ final class UserTokenModel: Model, Codable, @unchecked Sendable {
   }
 
   func toDTO() throws -> User.Token {
-    try .init(id: requireID(), userID: $user.id, value: value)
+    try .init(id: requireID(), userID: .init(rawValue: $user.id), value: value)
   }
 
 }

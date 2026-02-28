@@ -25,7 +25,7 @@ extension SharedDatabase.UserProfiles: TestDependencyKey {
       fetch: { userID in
         try await UserProfileModel.query(on: database)
           .with(\.$user)
-          .filter(\.$user.$id == userID)
+          .filter(\.$user.$id == userID.rawValue)
           .first()
           .map { try $0.toDTO() }
       },
@@ -37,7 +37,7 @@ extension SharedDatabase.UserProfiles: TestDependencyKey {
         guard
           let profile = try await UserProfileModel.query(on: database)
             .field(\.$theme)
-            .filter(\.$user.$id == id)
+            .filter(\.$user.$id == id.rawValue)
             .first(),
           let theme = profile.theme
         else { return nil }
@@ -158,7 +158,7 @@ final class UserProfileModel: Model, @unchecked Sendable {
     theme: Theme? = nil
   ) {
     self.id = id
-    $user.id = userID
+    $user.id = userID.rawValue
     self.firstName = firstName
     self.lastName = lastName
     self.companyName = companyName
@@ -171,8 +171,8 @@ final class UserProfileModel: Model, @unchecked Sendable {
 
   func toDTO() throws -> User.Profile {
     try .init(
-      id: requireID(),
-      userID: $user.id,
+      id: .init(rawValue: requireID()),
+      userID: .init(rawValue: $user.id),
       firstName: firstName,
       lastName: lastName,
       companyName: companyName,
