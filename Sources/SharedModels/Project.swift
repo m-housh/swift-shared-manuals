@@ -114,3 +114,23 @@ extension Project {
     }
   }
 }
+
+#if DEBUG
+  extension Project {
+    public static var mock: Self {
+      @Dependency(\.uuid) var uuid
+      @Dependency(\.date.now) var now
+
+      return .init(
+        id: .init(uuid()),
+        name: "Testy McTestface",
+        streetAddress: "123 Sesame St.",
+        city: "Manhattan",
+        state: "NY",
+        zipCode: "10001",
+        createdAt: now,
+        updatedAt: now
+      )
+    }
+  }
+#endif

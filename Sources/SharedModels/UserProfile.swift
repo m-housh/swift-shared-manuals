@@ -149,3 +149,27 @@ extension User.Profile {
     }
   }
 }
+
+#if DEBUG
+  extension User.Profile {
+    public static var mock: Self {
+      @Dependency(\.date.now) var now
+      @Dependency(\.uuid) var uuid
+
+      return .init(
+        id: .init(uuid()),
+        userID: .init(uuid()),
+        firstName: "Testy",
+        lastName: "McTestface",
+        companyName: "Acme Co.",
+        streetAddress: "123 Sesame St",
+        city: "Manhattan",
+        state: "NY",
+        zipCode: "10001",
+        createdAt: now,
+        updatedAt: now
+      )
+    }
+  }
+
+#endif
