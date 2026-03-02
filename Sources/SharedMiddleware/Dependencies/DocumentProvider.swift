@@ -47,7 +47,7 @@ extension DocumentProvider: TestDependencyKey {
       logger.debug("Theme: \(String(describing: theme))")
       logger.debug("End embed...")
 
-      return MainDocument(title: "Dev Server", theme: theme) {
+      return MainDocument(title: title, theme: theme) {
         DefaultHead { head() }
       } body: {
         HTMLRaw(htmlString)
