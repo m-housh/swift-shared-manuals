@@ -11,9 +11,7 @@ extension ViewController where View: Sendable {
     @Dependency(\.document) var document
 
     let isHtmxRequest = request.headers.contains(name: "hx-request")
-    let html = try await view(
-      request: .init(isHtmxRequest: isHtmxRequest, route: route)
-    )
+    let html = try await view(for: route, on: request)
     guard isHtmxRequest else {
       return try await AnyHTMLResponse(value: document(html))
     }

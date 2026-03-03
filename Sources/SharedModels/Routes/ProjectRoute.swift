@@ -6,11 +6,6 @@ import Tagged
 
 extension Project {
 
-  // static let idParser = From(.utf8) {
-  //   UUID.parser()
-  //     .map(.representing(Project.ID.self))
-  // }
-
   public enum ViewRoute: Equatable, Sendable, Routeable {
     case delete(Project.ID)
     case detail(Project.ID)
