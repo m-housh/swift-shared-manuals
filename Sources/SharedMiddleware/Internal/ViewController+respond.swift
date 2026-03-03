@@ -1,5 +1,6 @@
 import Dependencies
 import Elementary
+import SharedModels
 import Vapor
 
 extension ViewController where View: Sendable {

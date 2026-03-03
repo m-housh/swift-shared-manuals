@@ -5,6 +5,8 @@ import FluentSQLiteDriver
 import SharedDatabase
 import SharedMiddleware
 import SharedModels
+import SharedStyleguide
+import SharedViews
 @preconcurrency import URLRouting
 import Vapor
 

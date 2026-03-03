@@ -1,11 +1,10 @@
 import Dependencies
 import Elementary
-import SharedModels
 import Vapor
 
 public protocol ViewController<Route>: Sendable {
   associatedtype Route
-  associatedtype View: HTML
+  associatedtype View: HTML & Sendable
 
   /// Respond to the given view request / route.
   ///

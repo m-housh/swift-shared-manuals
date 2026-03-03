@@ -31,12 +31,67 @@ enum SiteRoute: Routeable {
   }
 }
 
+struct MyProjectController: ViewController {
+  @Dependency(\.auth) var auth
+  @Dependency(\.sharedDatabase) var database
+
+  let projectController = ProjectViewController { _ in
+    await ResultView {
+      @Dependency(\.auth) var auth
+      @Dependency(\.sharedDatabase) var database
+      let user = try auth.currentUser()
+      return (
+        user.id,
+        try await database.projects.fetch(user.id, .first)
+      )
+    } onSuccess: {
+      ProjectsTable(userID: $0, projects: $1)
+    }
+  }
+
+  func view(for route: Project.ViewRoute, on request: Request) async throws -> some HTML & Sendable
+  {
+    try await projectController.view(for: route, on: request)
+  }
+}
+
 struct SiteViewController: ViewController {
+
   @Dependency(\.auth) var auth
   @Dependency(\.sharedDatabase) var database
   @Dependency(\.logger) var logger
 
   typealias Route = SiteRoute
+
+  let sharedViewController = SharedViewController(
+    authViewController: AuthViewController { nextRoute in
+      LoggedIn(next: nextRoute)
+    },
+    projectViewController: ProjectViewController { _ in
+      fatalError()
+      // @Dependency(\.auth) var auth
+      // @Dependency(\.sharedDatabase) var database
+      // await ResultView {
+      //   // Create the project then reload the rows, just for this dev server.
+      //   // Real app would navigate to project detail route.
+      //   let user = try auth.currentUser()
+      //   let _ = try await database.projects.create(user.id, form)
+      //   return (
+      //     user.id,
+      //     try await database.projects.fetch(user.id, .first)
+      //   )
+      // } onSuccess: { userID, projects in
+      //   PageView {
+      //     ProjectsTable(userID: userID, projects: projects)
+      //   }
+      // }
+    },
+    userViewController: UserViewController { profile in
+      PageContent(theme: profile.theme) {
+        LoggedIn(next: nil)
+      }
+    }
+  )
 
   @HTMLBuilder
   func view(for route: SiteRoute, on request: Request) async throws -> (some HTML & Sendable) {
@@ -57,107 +112,8 @@ struct SiteViewController: ViewController {
       }
 
     case .shared(let route):
-      switch route {
-      case .auth(let route):
-        await route.view()
-
-      case .privacyPolicy:
-        PrivacyPolicyView()
-      case .project(let route):
-        await route.view()
-      case .user(let route):
-        switch route {
-
-        case .profile(let userID, let route):
-          switch route {
-          case .index:
-            await ResultView {
-              guard let profile = try await database.userProfiles.fetch(userID) else {
-                throw NotFoundError()
-              }
-              return profile
-            } onSuccess: { profile in
-              PageView {
-                UserProfileView(profile: profile)
-              }
-            }
-          case .update(let id, let form):
-
-            await ResultView {
-              logger.debug("Updating profile: \(form)")
-              let profile = try await database.userProfiles.update(id, form)
-              return (
-                try await database.users.get(profile.userID),
-                profile.theme
-              )
-            } onSuccess: { user, theme in
-              PageContent(theme: theme) {
-                HomePage(user: user)
-              }
-            }
-          }
-
-        case .signup(.index):
-          await ResultView {
-            Modal(open: true, displayCloseButton: false) {
-              SignupForm()
-            }
-          }
-        case .signup(.submit(let form)):
-          await ResultView {
-            try await auth.createAndLogin(form)
-          } onSuccess: { user in
-            Modal(open: true, displayCloseButton: false) {
-              UserProfileForm(userID: user.id, signup: true)
-            }
-          }
-        case .signup(.submitProfile(let profile)):
-          await ResultView {
-            let profile = try await database.userProfiles.create(profile)
-            return profile.theme
-          } onSuccess: { theme in
-            PageContent(theme: theme) {
-              LoggedIn(next: nil)
-            }
-          }
-
-        }
-      }
-    }
-  }
-}
-
-extension SharedRoute.Auth {
-  @HTMLBuilder
-  func view() async -> (some HTML & Sendable) {
-    @Dependency(\.auth) var auth
-    @Dependency(\.sharedDatabase) var database
-
-    switch self {
-
-    case .login(.index(next: let next)):
-      await ResultView {
-        Modal(open: true, displayCloseButton: false) {
-          LoginForm(next: next)
-        }
-      }
-    case .login(.submit(let form)):
-      await ResultView {
-        let user = try await auth.login(form)
-        let theme = try await database.userProfiles.theme(user.id)
-        return (form.next, theme)
-      } onSuccess: { (next, theme) in
-        PageContent(theme: theme) {
-          LoggedIn(next: next)
-        }
-      }
-
-    case .logout:
-      await ResultView {
-        try auth.logout()
-      } onSuccess: {
-        HomePage(user: nil)
-      }
+      try await sharedViewController.view(for: route, on: request)
+    // fatalError()
     }
   }
 }
