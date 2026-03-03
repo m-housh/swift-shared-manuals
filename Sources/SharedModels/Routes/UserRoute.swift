@@ -5,10 +5,6 @@ import Tagged
 
 extension User {
 
-  static let idParser = From(.utf8) {
-    UUID.parser().map(.representing(User.ID.self))
-  }
-
   // TODO: Add update password route.
   // TODO: Signup route should have a 'next' property too.
   public enum ViewRoute: Equatable, Sendable, Routeable {
@@ -19,7 +15,7 @@ extension User {
       Route(.case(Self.profile)) {
         Path {
           "user"
-          User.idParser
+          User.ID.parser()
         }
         Profile.router
       }
@@ -42,7 +38,7 @@ extension User {
         Route(.case(Self.update)) {
           Path {
             path
-            User.Profile.idParser
+            User.Profile.ID.parser()
           }
           Method.patch
           Body {
@@ -110,7 +106,7 @@ extension User {
           Method.post
           Body {
             FormData {
-              Field("userID") { User.idParser }
+              Field("userID") { User.ID.parser() }
               Field("firstName", .string)
               Field("lastName", .string)
               Field("companyName", .string)
@@ -127,11 +123,5 @@ extension User {
         }
       }
     }
-  }
-}
-
-extension User.Profile {
-  static let idParser = From(.utf8) {
-    UUID.parser().map(.representing(Self.ID.self))
   }
 }

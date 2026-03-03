@@ -6,10 +6,10 @@ import Tagged
 
 extension Project {
 
-  static let idParser = From(.utf8) {
-    UUID.parser()
-      .map(.representing(Project.ID.self))
-  }
+  // static let idParser = From(.utf8) {
+  //   UUID.parser()
+  //     .map(.representing(Project.ID.self))
+  // }
 
   public enum ViewRoute: Equatable, Sendable, Routeable {
     case delete(Project.ID)
@@ -29,14 +29,14 @@ extension Project {
       Route(.case(Self.delete)) {
         Path {
           path
-          Project.idParser
+          Project.ID.parser()
         }
         Method.delete
       }
       Route(.case(Self.detail)) {
         Path {
           path
-          Project.idParser
+          Project.ID.parser()
         }
         Method.get
       }
@@ -73,7 +73,7 @@ extension Project {
       Route(.case(Self.update)) {
         Path {
           path
-          Project.idParser
+          Project.ID.parser()
         }
         Method.patch
         Body {
