@@ -7,6 +7,7 @@ import SharedModels
 import SharedStyleguide
 import SharedViews
 @preconcurrency import URLRouting
+import Vapor
 
 enum SiteRoute: Routeable {
   case home
@@ -38,8 +39,8 @@ struct SiteViewController: ViewController {
   typealias Route = SiteRoute
 
   @HTMLBuilder
-  func view(request: ViewRequest<SiteRoute>) async throws -> (some HTML & Sendable) {
-    switch request.route {
+  func view(for route: SiteRoute, on request: Request) async throws -> (some HTML & Sendable) {
+    switch route {
     case .home:
       await ResultView {
         var theme: Theme? = nil
