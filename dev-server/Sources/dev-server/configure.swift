@@ -58,6 +58,7 @@ private func addMiddleware(
       dependencies.auth = .live(on: request)
       dependencies.document = .live(title: "Dev Server")
       dependencies.logger = request.logger
+      dependencies.viewResponder = MyViewResponder()
     }
   )
 }

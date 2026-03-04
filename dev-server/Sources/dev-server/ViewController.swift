@@ -8,6 +8,7 @@ import SharedStyleguide
 import SharedViews
 @preconcurrency import URLRouting
 import Vapor
+import VaporElementary
 
 enum SiteRoute: Routeable {
   case home
@@ -52,6 +53,36 @@ struct MyProjectController: ViewController {
     on request: Request
   ) async throws -> ViewResponse {
     try await projectController.view(for: route, on: request)
+  }
+}
+
+struct MyViewResponder: ViewResponder {
+  @Dependency(\.auth) var auth
+  @Dependency(\.sharedDatabase) var database
+  @Dependency(\.logger) var logger
+
+  func respond<View>(
+    with view: View,
+    on request: Request
+  ) async throws -> HTMLResponse where View: HTML, View: Sendable {
+    guard request.headers.contains(name: "hx-request") else {
+      logger.info("Begin embed in document...")
+      var theme: Theme? = nil
+      if let currentUser = try? auth.currentUser() {
+        theme = try await database.userProfiles.theme(currentUser.id)
+      }
+      logger.info("Theme: \(String(describing: theme))")
+      logger.info("End embed...")
+
+      return .init {
+        MainDocument(title: "Dev server", theme: theme) {
+          DefaultHead()
+        } body: {
+          view
+        }
+      }
+    }
+    return .init { view }
   }
 }
 
