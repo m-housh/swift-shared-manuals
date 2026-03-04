@@ -68,11 +68,7 @@ struct SiteViewController: ViewController {
       LoggedIn(next: nextRoute)
     },
     projects: MyProjectController(),
-    users: UserViewController { profile in
-      PageContent(theme: profile.theme) {
-        LoggedIn(next: nil)
-      }
-    }
+    users: UserViewController()
   )
 
   @HTMLBuilder

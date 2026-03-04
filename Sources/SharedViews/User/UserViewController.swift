@@ -66,3 +66,11 @@ public struct UserViewController<Next: HTML>: ViewController where Next: Sendabl
     }
   }
 }
+
+extension UserViewController where Next == UserProfileView {
+  public init() {
+    self.init { profile in
+      UserProfileView(profile: profile)
+    }
+  }
+}
