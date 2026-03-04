@@ -59,8 +59,7 @@ extension Application {
     R: Sendable,
     R.Output: Sendable,
     R.Input == URLRequestData,
-    V: Sendable,
-    V.View: Sendable
+    V: Sendable
   {
     mount(
       router,
@@ -82,7 +81,6 @@ extension Application {
   )
   where
     C: Sendable,
-    C.View: Sendable,
     C.Route: Routeable,
     C.Route.Router: Sendable,
     C.Route.Router.Output: Sendable
@@ -159,6 +157,7 @@ extension ViewController where View: Sendable {
   ) async throws
     -> any AsyncResponseEncodable
   {
-    try await respond(to: route, on: request)
+    try await view(for: route, on: request).makeResponse(request)
+    // try await respond(to: route, on: request)
   }
 }

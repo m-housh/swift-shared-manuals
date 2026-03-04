@@ -16,31 +16,37 @@ public struct AuthViewController<Next: HTML>: ViewController where Next: Sendabl
     self.nextView = next
   }
 
-  @HTMLBuilder
+  // @HTMLBuilder
   public func view(
     for route: SharedRoute.Auth,
     on request: Request
-  ) async throws -> (some HTML & Sendable) {
+  ) async throws -> ViewResponse {
     switch route {
     case .logout:
-      await ResultView {
-        try auth.logout()
-        return await nextView(nil)
-      } onSuccess: {
-        $0
+      return .view {
+        await ResultView {
+          try auth.logout()
+          return await nextView(nil)
+        } onSuccess: {
+          $0
+        }
       }
     case .login(let route):
       switch route {
       case .index(let next):
-        Modal(open: true, displayCloseButton: false) {
-          LoginForm(next: next)
+        return .view {
+          Modal(open: true, displayCloseButton: false) {
+            LoginForm(next: next)
+          }
         }
       case .submit(let form):
-        await ResultView {
-          _ = try await auth.login(form)
-          return await nextView(form.next)
-        } onSuccess: {
-          $0
+        return .view {
+          await ResultView {
+            _ = try await auth.login(form)
+            return await nextView(form.next)
+          } onSuccess: {
+            $0
+          }
         }
       }
     }

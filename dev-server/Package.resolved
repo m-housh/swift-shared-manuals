@@ -443,6 +443,15 @@
       }
     },
     {
+      "identity" : "vapor-elementary",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor-community/vapor-elementary.git",
+      "state" : {
+        "revision" : "e1326d2439a9d4bd271c24b9765c195f7f793e77",
+        "version" : "0.2.2"
+      }
+    },
+    {
       "identity" : "vapor-routing",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/vapor-routing.git",

@@ -25,22 +25,21 @@ where
     self.userViewController = userViewController
   }
 
-  @HTMLBuilder
   public func view(
     for route: SharedRoute,
     on request: Request
-  ) async throws -> some HTML & Sendable {
+  ) async throws -> ViewResponse {
     switch route {
     case .auth(let route):
-      await ResultView {
-        try await authViewController.view(for: route, on: request)
-      }
+      return try await authViewController.view(for: route, on: request)
     case .privacyPolicy:
-      PrivacyPolicyView()
+      return .view {
+        PrivacyPolicyView()
+      }
     case .project(let route):
-      try await projectViewController.view(for: route, on: request)
+      return try await projectViewController.view(for: route, on: request)
     case .user(let route):
-      try await userViewController.view(for: route, on: request)
+      return try await userViewController.view(for: route, on: request)
     }
   }
 }

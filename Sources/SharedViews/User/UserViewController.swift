@@ -19,48 +19,57 @@ public struct UserViewController<Next: HTML>: ViewController where Next: Sendabl
     self.afterSignup = afterSignup
   }
 
-  @HTMLBuilder
   public func view(
     for route: User.ViewRoute,
     on request: Request
-  ) async throws -> (some HTML & Sendable) {
+  ) async throws -> ViewResponse {
     switch route {
     case .profile(let userID, let route):
       switch route {
       case .index:
-        await ResultView {
-          guard let profile = try await database.userProfiles.fetch(userID) else {
-            throw NotFoundError()
+        return .view {
+          await ResultView {
+            guard let profile = try await database.userProfiles.fetch(userID) else {
+              throw NotFoundError()
+            }
+            return profile
+          } onSuccess: { profile in
+            UserProfileView(profile: profile)
           }
-          return profile
-        } onSuccess: { profile in
-          UserProfileView(profile: profile)
         }
       case .update(let id, let updates):
-        await ResultView {
-          try await database.userProfiles.update(id, updates)
-        } onSuccess: { profile in
-          UserProfileView(profile: profile)
+        return .view {
+          await ResultView {
+            try await database.userProfiles.update(id, updates)
+          } onSuccess: { profile in
+            UserProfileView(profile: profile)
+          }
         }
       }
     case .signup(let route):
       switch route {
       case .index:
-        Modal(open: true, displayCloseButton: false) {
-          SignupForm()
+        return .view {
+          Modal(open: true, displayCloseButton: false) {
+            SignupForm()
+          }
         }
       case .submit(let form):
-        await ResultView {
-          try await auth.createAndLogin(form)
-        } onSuccess: { user in
-          Modal(open: true, displayCloseButton: false) {
-            UserProfileForm(userID: user.id, signup: true)
+        return .view {
+          await ResultView {
+            try await auth.createAndLogin(form)
+          } onSuccess: { user in
+            Modal(open: true, displayCloseButton: false) {
+              UserProfileForm(userID: user.id, signup: true)
+            }
           }
         }
       case .submitProfile(let form):
-        await ResultView {
-          let profile = try await database.userProfiles.create(form)
-          return try await afterSignup(profile)
+        return .view {
+          await ResultView {
+            let profile = try await database.userProfiles.create(form)
+            return try await afterSignup(profile)
+          }
         }
       }
     }

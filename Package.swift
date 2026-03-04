@@ -27,6 +27,7 @@ let package = Package(
     .package(url: "https://github.com/vapor/vapor.git", from: "4.110.1"),
     .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
     .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.6.0"),
+    .package(url: "https://github.com/vapor-community/vapor-elementary.git", from: "0.1.0"),
   ],
   targets: [
     .target(
@@ -67,6 +68,7 @@ let package = Package(
         .product(name: "Tagged", package: "swift-tagged"),
         .product(name: "URLRouting", package: "swift-url-routing"),
         .product(name: "Vapor", package: "vapor"),
+        .product(name: "VaporElementary", package: "vapor-elementary"),
       ],
     ),
     .target(

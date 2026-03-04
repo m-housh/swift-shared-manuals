@@ -50,7 +50,7 @@ struct MyProjectController: ViewController {
   func view(
     for route: Project.ViewRoute,
     on request: Request
-  ) async throws -> some HTML & Sendable {
+  ) async throws -> ViewResponse {
     try await projectController.view(for: route, on: request)
   }
 }
@@ -71,26 +71,27 @@ struct SiteViewController: ViewController {
     users: UserViewController()
   )
 
-  @HTMLBuilder
-  func view(for route: SiteRoute, on request: Request) async throws -> (some HTML & Sendable) {
+  func view(for route: SiteRoute, on request: Request) async throws -> ViewResponse {
     switch route {
     case .home:
-      await ResultView {
-        var theme: Theme? = nil
-        let currentUser = try? auth.currentUser()
-        logger.debug("Current user: \(currentUser?.email ?? "nil")")
-        if let currentUser {
-          theme = try await database.userProfiles.theme(currentUser.id)
-        }
-        return (currentUser, theme)
-      } onSuccess: { user, theme in
-        PageContent(theme: theme) {
-          HomePage(user: user)
+      return .view {
+        await ResultView {
+          var theme: Theme? = nil
+          let currentUser = try? auth.currentUser()
+          logger.debug("Current user: \(currentUser?.email ?? "nil")")
+          if let currentUser {
+            theme = try await database.userProfiles.theme(currentUser.id)
+          }
+          return (currentUser, theme)
+        } onSuccess: { user, theme in
+          PageContent(theme: theme) {
+            HomePage(user: user)
+          }
         }
       }
 
     case .shared(let route):
-      try await sharedViewController.view(for: route, on: request)
+      return try await sharedViewController.view(for: route, on: request)
     }
   }
 }
