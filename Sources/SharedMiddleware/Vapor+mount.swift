@@ -9,7 +9,7 @@ import VaporRouting
 // Usage:
 // app.mount(
 //   router,
-//   middleware: { route in
+//   routeMiddleware: { route in
 //     case .onboarding: return nil
 //     case .signIn: return BasicAuthMiddleware()
 //     default: return BearerAuthMiddleware()
@@ -154,10 +154,14 @@ extension ViewController where View: Sendable {
   fileprivate func siteHandler(
     _ request: Request,
     _ route: Route
-  ) async throws
-    -> any AsyncResponseEncodable
-  {
-    try await view(for: route, on: request).makeResponse(request)
-    // try await respond(to: route, on: request)
+  ) async throws -> any AsyncResponseEncodable {
+    try await view(for: route, on: request)
+  }
+}
+
+extension ViewResponse: AsyncResponseEncodable {
+
+  public func encodeResponse(for request: Request) async throws -> Response {
+    try await makeResponse(request).encodeResponse(for: request)
   }
 }

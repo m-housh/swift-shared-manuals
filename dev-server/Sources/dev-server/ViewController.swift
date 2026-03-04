@@ -56,36 +56,6 @@ struct MyProjectController: ViewController {
   }
 }
 
-struct MyViewResponder: ViewResponder {
-  @Dependency(\.auth) var auth
-  @Dependency(\.sharedDatabase) var database
-  @Dependency(\.logger) var logger
-
-  func respond<View>(
-    with view: View,
-    on request: Request
-  ) async throws -> HTMLResponse where View: HTML, View: Sendable {
-    guard request.headers.contains(name: "hx-request") else {
-      logger.info("Begin embed in document...")
-      var theme: Theme? = nil
-      if let currentUser = try? auth.currentUser() {
-        theme = try await database.userProfiles.theme(currentUser.id)
-      }
-      logger.info("Theme: \(String(describing: theme))")
-      logger.info("End embed...")
-
-      return .init {
-        MainDocument(title: "Dev server", theme: theme) {
-          DefaultHead()
-        } body: {
-          view
-        }
-      }
-    }
-    return .init { view }
-  }
-}
-
 struct SiteViewController: ViewController {
 
   @Dependency(\.auth) var auth
@@ -95,9 +65,7 @@ struct SiteViewController: ViewController {
   typealias Route = SiteRoute
 
   let sharedViewController = SharedViewController(
-    auth: AuthViewController { nextRoute in
-      LoggedIn(next: nextRoute)
-    },
+    auth: AuthViewController(),
     projects: MyProjectController(),
     users: UserViewController()
   )

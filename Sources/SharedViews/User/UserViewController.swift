@@ -6,6 +6,7 @@ import SharedModels
 import SharedStyleguide
 import Vapor
 
+// TODO: Remove after signup and redirect / use next route in signup form.
 public struct UserViewController<Next: HTML>: ViewController where Next: Sendable {
 
   @Dependency(\.auth) var auth
@@ -28,22 +29,15 @@ public struct UserViewController<Next: HTML>: ViewController where Next: Sendabl
       switch route {
       case .index:
         return .view {
-          await ResultView {
-            guard let profile = try await database.userProfiles.fetch(userID) else {
-              throw NotFoundError()
-            }
-            return profile
-          } onSuccess: { profile in
-            UserProfileView(profile: profile)
+          guard let profile = try await database.userProfiles.fetch(userID) else {
+            throw NotFoundError()
           }
+          return UserProfileView(profile: profile)
         }
       case .update(let id, let updates):
         return .view {
-          await ResultView {
-            try await database.userProfiles.update(id, updates)
-          } onSuccess: { profile in
-            UserProfileView(profile: profile)
-          }
+          let profile = try await database.userProfiles.update(id, updates)
+          return UserProfileView(profile: profile)
         }
       }
     case .signup(let route):
@@ -56,20 +50,15 @@ public struct UserViewController<Next: HTML>: ViewController where Next: Sendabl
         }
       case .submit(let form):
         return .view {
-          await ResultView {
-            try await auth.createAndLogin(form)
-          } onSuccess: { user in
-            Modal(open: true, displayCloseButton: false) {
-              UserProfileForm(userID: user.id, signup: true)
-            }
+          let user = try await auth.createAndLogin(form)
+          return Modal(open: true, displayCloseButton: false) {
+            UserProfileForm(userID: user.id, signup: true)
           }
         }
       case .submitProfile(let form):
         return .view {
-          await ResultView {
-            let profile = try await database.userProfiles.create(form)
-            return try await afterSignup(profile)
-          }
+          let profile = try await database.userProfiles.create(form)
+          return try await afterSignup(profile)
         }
       }
     }

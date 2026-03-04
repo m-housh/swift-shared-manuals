@@ -1,5 +1,44 @@
-<div><h1 class="text-xl font-bold pb-6">Profile</h1><form class="grid grid-cols-1 gap-4 p-4" hx-post="/signup/profile" hx-target="#content" hx-swap="outerHTML"><input class="hidden" name="userID" value="00000000-0000-0000-0000-000000000000"><label class="input w-full"><span class="label">First Name</span><input name="firstName" value="" required autofocus></label><label class="input w-full"><span class="label">Last Name</span><input name="lastName" value="" required></label><label class="input w-full"><span class="label">Company</span><input name="companyName" value="" required></label><label class="input w-full"><span class="label">Address</span><input name="streetAddress" value="" required></label><label class="input w-full"><span class="label">City</span><input name="city" value="" required></label><label class="input w-full"><span class="label">State</span><input name="state" value="" required></label><label class="input w-full"><span class="label">Zip</span><input name="zipCode" value="" required></label><input class="checkbox hidden theme-controller" type="checkbox" id="theme-control" value="" checked><label class="select w-full"><span class="label">Theme</span><select id="theme" name="theme" onchange="(function() {
+<div>
+  <h1 class="text-xl font-bold pb-6">Profile</h1>
+  <form class="grid grid-cols-1 gap-4 p-4" hx-post="/signup/profile" hx-target="#content" hx-swap="outerHTML">
+    <input class="hidden" name="userID" value="00000000-0000-0000-0000-000000000000">
+    First Name<label class="input w-full"><span class="label"></span>
+    <input name="firstName" value="" required autofocus>
+    Last Name</label><label class="input w-full"><span class="label"></span>
+    <input name="lastName" value="" required>
+    Company</label><label class="input w-full"><span class="label"></span>
+    <input name="companyName" value="" required>
+    Address</label><label class="input w-full"><span class="label"></span>
+    <input name="streetAddress" value="" required>
+    City</label><label class="input w-full"><span class="label"></span>
+    <input name="city" value="" required>
+    State</label><label class="input w-full"><span class="label"></span>
+    <input name="state" value="" required>
+    Zip</label><label class="input w-full"><span class="label"></span>
+    <input name="zipCode" value="" required></label>
+    <input class="checkbox hidden theme-controller" type="checkbox" id="theme-control" value="" checked>
+    Theme<label class="select w-full"><span class="label"></span>
+    <select id="theme" name="theme" onchange="(function() {
   const checkbox = document.getElementById('theme-control');
   const select = document.getElementById('theme');
   checkbox.value = select.value;
-})();"><option selected disabled>Optional theme</option><option disabled>Default</option><option value="default">Default</option><option disabled>Light</option><option value="cupcake">Cupcake</option><option value="light">Light</option><option value="nord">Nord</option><option value="retro">Retro</option><option disabled>Dark</option><option value="aqua">Aqua</option><option value="cyberpunk">Cyberpunk</option><option value="dark">Dark</option><option value="dracula">Dracula</option><option value="night">Night</option><option value="synthwave">Synthwave</option></select></label><button class="btn btn-secondary btn-block" type="submit">Submit</button></form></div>
+})();">
+      <option selected disabled>Optional theme</option>
+      <option disabled>Default</option>
+      <option value="default">Default</option>
+      <option disabled>Light</option>
+      <option value="cupcake">Cupcake</option>
+      <option value="light">Light</option>
+      <option value="nord">Nord</option>
+      <option value="retro">Retro</option>
+      <option disabled>Dark</option>
+      <option value="aqua">Aqua</option>
+      <option value="cyberpunk">Cyberpunk</option>
+      <option value="dark">Dark</option>
+      <option value="dracula">Dracula</option>
+      <option value="night">Night</option>
+      <option value="synthwave">Synthwave</option>
+    </select></label>
+    <button class="btn btn-secondary btn-block" type="submit">Submit</button>
+  </form>
+</div>

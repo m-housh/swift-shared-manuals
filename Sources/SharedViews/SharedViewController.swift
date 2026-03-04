@@ -43,3 +43,12 @@ where
     }
   }
 }
+
+extension SharedViewController where Auth == AuthViewController {
+  public init(
+    projects projectViewController: Projects,
+    users userViewController: Users
+  ) {
+    self.init(auth: .init(), projects: projectViewController, users: userViewController)
+  }
+}

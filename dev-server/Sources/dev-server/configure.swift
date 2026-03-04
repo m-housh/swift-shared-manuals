@@ -56,9 +56,11 @@ private func addMiddleware(
     DependenciesMiddleware { dependencies, request in
       dependencies.sharedDatabase = database
       dependencies.auth = .live(on: request)
-      dependencies.document = .live(title: "Dev Server")
       dependencies.logger = request.logger
-      dependencies.viewResponder = MyViewResponder()
+      dependencies.viewResponder = .live(
+        title: "Dev server",
+        head: { DefaultHead() }
+      )
     }
   )
 }

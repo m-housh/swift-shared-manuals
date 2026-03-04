@@ -25,41 +25,27 @@ public struct ProjectViewController<Next: HTML>: ViewController where Next: Send
     switch route {
     case .delete(let id):
       return .view {
-        await ResultView {
-          try await database.projects.delete(id)
-        }
+        try await database.projects.delete(id)
       }
     case .detail(let id):
       return .view {
-        await ResultView {
-          guard let project = try await database.projects.get(id) else {
-            throw NotFoundError()
-          }
-          return project
-        } onSuccess: { project in
-          ProjectDetail(project: project)
+        guard let project = try await database.projects.get(id) else {
+          throw NotFoundError()
         }
+
+        return ProjectDetail(project: project)
       }
     case .index:
       return .view {
-        await ResultView {
-          let user = try auth.currentUser()
-          return (
-            user.id,
-            try await database.projects.fetch(user.id, .first)
-          )
-        } onSuccess: { userID, projects in
-          ProjectsTable(userID: userID, projects: projects)
-        }
+        let user = try auth.currentUser()
+        let projects = try await database.projects.fetch(user.id, .first)
+        return ProjectsTable(userID: user.id, projects: projects)
       }
     case .page(let page):
       return .view {
-        await ResultView {
-          let user = try auth.currentUser()
-          return try await database.projects.fetch(user.id, page)
-        } onSuccess: { projects in
-          ProjectsTable.Rows(projects: projects)
-        }
+        let user = try auth.currentUser()
+        let projects = try await database.projects.fetch(user.id, page)
+        return ProjectsTable.Rows(projects: projects)
       }
 
     case .submit(let form):

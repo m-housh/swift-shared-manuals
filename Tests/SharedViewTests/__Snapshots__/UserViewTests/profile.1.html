@@ -1,6 +1,89 @@
-<div><div class="flex justify-between bg-secondary border-2 border-primary rounded-sm shadow-sm 
-p-6 w-full"><h1 class="text-3xl font-bold">Account</h1><div class="tooltip tooltip-left" data-tip="Edit profile"><button class="btn btn-primary" onclick="userProfileForm_00000000000000000000000000000000.showModal()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg></button></div></div><table class="table table-zebra"><tr><td><span class="label font-bold">Name</span></td><td>Testy McTestface</td></tr><tr><td><span class="label font-bold">Company</span></td><td>Acme Co.</td></tr><tr><td><span class="label font-bold">Street Address</span></td><td>123 Sesame St</td></tr><tr><td><span class="label font-bold">City</span></td><td>Manhattan</td></tr><tr><td><span class="label font-bold">State</span></td><td>NY</td></tr><tr><td><span class="label font-bold">Zip Code</span></td><td>10001</td></tr><tr><td><span class="label font-bold">Theme</span></td><td></td></tr></table><dialog id="userProfileForm_00000000000000000000000000000000" class="modal"><div class="modal-box"><button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick="userProfileForm_00000000000000000000000000000000.close();"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><div><h1 class="text-xl font-bold pb-6">Profile</h1><form class="grid grid-cols-1 gap-4 p-4" hx-patch="/user/00000000-0000-0000-0000-000000000001/profile/00000000-0000-0000-0000-000000000000" hx-target="#content" hx-swap="outerHTML"><input class="hidden" name="id" value="00000000-0000-0000-0000-000000000000"><input class="hidden" name="userID" value="00000000-0000-0000-0000-000000000001"><label class="input w-full"><span class="label">First Name</span><input name="firstName" value="Testy" required autofocus></label><label class="input w-full"><span class="label">Last Name</span><input name="lastName" value="McTestface" required></label><label class="input w-full"><span class="label">Company</span><input name="companyName" value="Acme Co." required></label><label class="input w-full"><span class="label">Address</span><input name="streetAddress" value="123 Sesame St" required></label><label class="input w-full"><span class="label">City</span><input name="city" value="Manhattan" required></label><label class="input w-full"><span class="label">State</span><input name="state" value="NY" required></label><label class="input w-full"><span class="label">Zip</span><input name="zipCode" value="10001" required></label><input class="checkbox hidden theme-controller" type="checkbox" id="theme-control" value="" checked><label class="select w-full"><span class="label">Theme</span><select id="theme" name="theme" onchange="(function() {
+<div>
+  <div class="flex justify-between bg-secondary border-2 border-primary rounded-sm shadow-sm 
+p-6 w-full">
+    <h1 class="text-3xl font-bold">Account</h1>
+    <div class="tooltip tooltip-left" data-tip="Edit profile">
+      <button class="btn btn-primary" onclick="userProfileForm_00000000000000000000000000000000.showModal()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg></button>
+    </div>
+  </div>
+  <table class="table table-zebra">
+    <tr>
+      <td><span class="label font-bold">Name</span></td>
+      <td>Testy McTestface</td>
+    </tr>
+    <tr>
+      <td><span class="label font-bold">Company</span></td>
+      <td>Acme Co.</td>
+    </tr>
+    <tr>
+      <td><span class="label font-bold">Street Address</span></td>
+      <td>123 Sesame St</td>
+    </tr>
+    <tr>
+      <td><span class="label font-bold">City</span></td>
+      <td>Manhattan</td>
+    </tr>
+    <tr>
+      <td><span class="label font-bold">State</span></td>
+      <td>NY</td>
+    </tr>
+    <tr>
+      <td><span class="label font-bold">Zip Code</span></td>
+      <td>10001</td>
+    </tr>
+    <tr>
+      <td><span class="label font-bold">Theme</span></td>
+      <td></td>
+    </tr>
+  </table>
+  <dialog id="userProfileForm_00000000000000000000000000000000" class="modal">
+    <div class="modal-box">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick="userProfileForm_00000000000000000000000000000000.close();"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <div>
+        <h1 class="text-xl font-bold pb-6">Profile</h1>
+        <form class="grid grid-cols-1 gap-4 p-4" hx-patch="/user/00000000-0000-0000-0000-000000000001/profile/00000000-0000-0000-0000-000000000000" hx-target="#content" hx-swap="outerHTML">
+          <input class="hidden" name="id" value="00000000-0000-0000-0000-000000000000">
+          <input class="hidden" name="userID" value="00000000-0000-0000-0000-000000000001">
+          First Name<label class="input w-full"><span class="label"></span>
+          <input name="firstName" value="Testy" required autofocus>
+          Last Name</label><label class="input w-full"><span class="label"></span>
+          <input name="lastName" value="McTestface" required>
+          Company</label><label class="input w-full"><span class="label"></span>
+          <input name="companyName" value="Acme Co." required>
+          Address</label><label class="input w-full"><span class="label"></span>
+          <input name="streetAddress" value="123 Sesame St" required>
+          City</label><label class="input w-full"><span class="label"></span>
+          <input name="city" value="Manhattan" required>
+          State</label><label class="input w-full"><span class="label"></span>
+          <input name="state" value="NY" required>
+          Zip</label><label class="input w-full"><span class="label"></span>
+          <input name="zipCode" value="10001" required></label>
+          <input class="checkbox hidden theme-controller" type="checkbox" id="theme-control" value="" checked>
+          Theme<label class="select w-full"><span class="label"></span>
+          <select id="theme" name="theme" onchange="(function() {
   const checkbox = document.getElementById('theme-control');
   const select = document.getElementById('theme');
   checkbox.value = select.value;
-})();"><option selected disabled>Optional theme</option><option disabled>Default</option><option value="default">Default</option><option disabled>Light</option><option value="cupcake">Cupcake</option><option value="light">Light</option><option value="nord">Nord</option><option value="retro">Retro</option><option disabled>Dark</option><option value="aqua">Aqua</option><option value="cyberpunk">Cyberpunk</option><option value="dark">Dark</option><option value="dracula">Dracula</option><option value="night">Night</option><option value="synthwave">Synthwave</option></select></label><button class="btn btn-secondary btn-block" type="submit">Submit</button></form></div></div></dialog></div>
+})();">
+            <option selected disabled>Optional theme</option>
+            <option disabled>Default</option>
+            <option value="default">Default</option>
+            <option disabled>Light</option>
+            <option value="cupcake">Cupcake</option>
+            <option value="light">Light</option>
+            <option value="nord">Nord</option>
+            <option value="retro">Retro</option>
+            <option disabled>Dark</option>
+            <option value="aqua">Aqua</option>
+            <option value="cyberpunk">Cyberpunk</option>
+            <option value="dark">Dark</option>
+            <option value="dracula">Dracula</option>
+            <option value="night">Night</option>
+            <option value="synthwave">Synthwave</option>
+          </select></label>
+          <button class="btn btn-secondary btn-block" type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+</div>

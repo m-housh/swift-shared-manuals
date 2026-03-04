@@ -5,31 +5,20 @@ import SharedModels
 import SharedStyleguide
 import Vapor
 
-public struct AuthViewController<Next: HTML>: ViewController where Next: Sendable {
+public struct AuthViewController: ViewController {
 
   @Dependency(\.auth) var auth
-  private let nextView: @Sendable (String?) async -> Next
 
-  public init(
-    @HTMLBuilder next: @escaping @Sendable (String?) async -> Next
-  ) {
-    self.nextView = next
-  }
+  public init() {}
 
-  // @HTMLBuilder
   public func view(
     for route: SharedRoute.Auth,
     on request: Request
   ) async throws -> ViewResponse {
     switch route {
     case .logout:
-      return .view {
-        await ResultView {
-          try auth.logout()
-          return await nextView(nil)
-        } onSuccess: {
-          $0
-        }
+      return .redirect(to: "/") {
+        try auth.logout()
       }
     case .login(let route):
       switch route {
@@ -40,13 +29,8 @@ public struct AuthViewController<Next: HTML>: ViewController where Next: Sendabl
           }
         }
       case .submit(let form):
-        return .view {
-          await ResultView {
-            _ = try await auth.login(form)
-            return await nextView(form.next)
-          } onSuccess: {
-            $0
-          }
+        return .redirect(to: form.next ?? "/") {
+          _ = try await auth.login(form)
         }
       }
     }
