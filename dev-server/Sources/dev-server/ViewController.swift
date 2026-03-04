@@ -32,8 +32,6 @@ enum SiteRoute: Routeable {
 }
 
 struct MyProjectController: ViewController {
-  @Dependency(\.auth) var auth
-  @Dependency(\.sharedDatabase) var database
 
   let projectController = ProjectViewController { _ in
     await ResultView {
@@ -49,8 +47,10 @@ struct MyProjectController: ViewController {
     }
   }
 
-  func view(for route: Project.ViewRoute, on request: Request) async throws -> some HTML & Sendable
-  {
+  func view(
+    for route: Project.ViewRoute,
+    on request: Request
+  ) async throws -> some HTML & Sendable {
     try await projectController.view(for: route, on: request)
   }
 }
@@ -64,29 +64,11 @@ struct SiteViewController: ViewController {
   typealias Route = SiteRoute
 
   let sharedViewController = SharedViewController(
-    authViewController: AuthViewController { nextRoute in
+    auth: AuthViewController { nextRoute in
       LoggedIn(next: nextRoute)
     },
-    projectViewController: ProjectViewController { _ in
-      fatalError()
-      // @Dependency(\.auth) var auth
-      // @Dependency(\.sharedDatabase) var database
-      // await ResultView {
-      //   // Create the project then reload the rows, just for this dev server.
-      //   // Real app would navigate to project detail route.
-      //   let user = try auth.currentUser()
-      //   let _ = try await database.projects.create(user.id, form)
-      //   return (
-      //     user.id,
-      //     try await database.projects.fetch(user.id, .first)
-      //   )
-      // } onSuccess: { userID, projects in
-      //   PageView {
-      //     ProjectsTable(userID: userID, projects: projects)
-      //   }
-      // }
-    },
-    userViewController: UserViewController { profile in
+    projects: MyProjectController(),
+    users: UserViewController { profile in
       PageContent(theme: profile.theme) {
         LoggedIn(next: nil)
       }
@@ -113,71 +95,6 @@ struct SiteViewController: ViewController {
 
     case .shared(let route):
       try await sharedViewController.view(for: route, on: request)
-    // fatalError()
-    }
-  }
-}
-
-extension Project.ViewRoute {
-  @HTMLBuilder
-  func view() async -> (some HTML & Sendable) {
-    @Dependency(\.auth) var auth
-    @Dependency(\.sharedDatabase) var database
-
-    switch self {
-    case .delete(let id):
-      await ResultView {
-        try await database.projects.delete(id)
-      }
-    case .detail(let id):
-      await ResultView {
-        guard let project = try await database.projects.get(id) else {
-          throw NotFoundError()
-        }
-        return project
-      } onSuccess: { project in
-        PageView {
-          ProjectDetail(project: project)
-        }
-      }
-    case .index:
-      await ResultView {
-        let user = try auth.currentUser()
-        return (
-          user.id,
-          try await database.projects.fetch(user.id, .first)
-        )
-      } onSuccess: { userID, projects in
-        PageView {
-          ProjectsTable(userID: userID, projects: projects)
-        }
-      }
-    case .page(let page):
-      await ResultView {
-        let user = try auth.currentUser()
-        return try await database.projects.fetch(user.id, page)
-      } onSuccess: { projects in
-        ProjectsTable.Rows(projects: projects)
-      }
-
-    case .submit(let form):
-      await ResultView {
-        // Create the project then reload the rows, just for this dev server.
-        // Real app would navigate to project detail route.
-        let user = try auth.currentUser()
-        let _ = try await database.projects.create(user.id, form)
-        return (
-          user.id,
-          try await database.projects.fetch(user.id, .first)
-        )
-      } onSuccess: { userID, projects in
-        PageView {
-          ProjectsTable(userID: userID, projects: projects)
-        }
-      }
-
-    default:
-      fatalError()
     }
   }
 }

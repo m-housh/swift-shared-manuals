@@ -11,14 +11,14 @@ where
   Users: ViewController<User.ViewRoute>
 {
 
-  let authViewController: Auth
-  let projectViewController: Projects
-  let userViewController: Users
+  private let authViewController: Auth
+  private let projectViewController: Projects
+  private let userViewController: Users
 
   public init(
-    authViewController: Auth,
-    projectViewController: Projects,
-    userViewController: Users
+    auth authViewController: Auth,
+    projects projectViewController: Projects,
+    users userViewController: Users
   ) {
     self.authViewController = authViewController
     self.projectViewController = projectViewController
