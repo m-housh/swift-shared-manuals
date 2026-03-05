@@ -4,6 +4,12 @@ import PackageDescription
 
 let package = Package(
   name: "swift-shared-manuals",
+  platforms: [
+    .iOS(.v13),
+    .macOS(.v10_15),
+    .tvOS(.v13),
+    .watchOS(.v6),
+  ],
   products: [
     .library(name: "AuthClient", targets: ["AuthClient"]),
     .library(name: "SharedDatabase", targets: ["SharedDatabase"]),
