@@ -72,19 +72,10 @@ func addRoutes(
     controller: SiteViewController(),
     routeMiddleware: { route in
       switch route {
-      case .shared(.auth(.login)),
-        .shared(.user(.signup)),
-        .shared(.privacyPolicy):
-        return nil
-      case .home,
-        .shared(.user(.profile)),
-        .shared(.auth(.logout)),
-        .shared(.project):
-        return [
-          User.passwordAuth(),
-          User.sessionAuth(),
-          User.redirectMiddleware(path: "/login"),
-        ]
+      case .home:
+        return User.viewAuthMiddleware()
+      case .shared(let route):
+        return route.viewMiddleware()
       }
     }
   )
