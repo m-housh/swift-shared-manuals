@@ -28,6 +28,22 @@ public struct Modal<Inner: HTML>: HTML {
     id: String,
     open isOpen: Bool = false,
     displayCloseButton: Bool = true,
+    attributes boxAttributes: [HTMLAttribute<HTMLTag.div>],
+    @HTMLBuilder body: () -> Inner
+  ) {
+    self.init(
+      id: id,
+      open: isOpen,
+      displayCloseButton: displayCloseButton,
+      boxAttributes: boxAttributes,
+      body: body()
+    )
+  }
+
+  public init(
+    id: String,
+    open isOpen: Bool = false,
+    displayCloseButton: Bool = true,
     attributes boxAttributes: HTMLAttribute<HTMLTag.div>...,
     @HTMLBuilder body: () -> Inner
   ) {
