@@ -1,6 +1,6 @@
-import Collections
 import Elementary
 import Foundation
+import OrderedCollections
 
 /// Represents a select field.
 ///
@@ -107,4 +107,3 @@ extension Select where Label == HTMLText, Element: Sendable {
     )
   }
 }
-
